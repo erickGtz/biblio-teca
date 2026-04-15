@@ -41,6 +41,19 @@ class RegisterActivity : AppCompatActivity() {
             val exito = dbHandler.registerUsuario(nombre, ap1, ap2, email, user, pass)
             if (exito) {
                 Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show()
+                
+                // Fetch the user to save session and ID properly. For now we know it's "usuario" role.
+                val loggedUser = dbHandler.loginUsuario(user, pass)
+                if (loggedUser != null) {
+                    val prefs = getSharedPreferences("BibliotecaPrefs", MODE_PRIVATE)
+                    prefs.edit().apply {
+                        putInt("userId", loggedUser.id_usuario)
+                        putString("userName", loggedUser.nombre)
+                        putString("userRole", loggedUser.rol)
+                        apply()
+                    }
+                }
+                
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()

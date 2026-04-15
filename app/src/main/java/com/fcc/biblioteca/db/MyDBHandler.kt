@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.fcc.biblioteca.model.Libro
 
 class MyDBHandler(
     context: Context,
@@ -13,7 +14,7 @@ class MyDBHandler(
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
     companion object {
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
         private const val DATABASE_NAME = "biblioteca_personal.db"
 
         // TABLE LIBROS
@@ -24,6 +25,7 @@ class MyDBHandler(
         const val COLUMN_LIBRO_AUTOR = "autor"
         const val COLUMN_LIBRO_ISBN = "isbn"
         const val COLUMN_LIBRO_ESTADO = "estado"
+        const val COLUMN_LIBRO_STOCK = "stock"
 
         // TABLE USUARIOS
         const val TABLE_USUARIOS = "usuarios"
@@ -62,7 +64,8 @@ class MyDBHandler(
                 + COLUMN_LIBRO_CATEGORIA + " TEXT,"
                 + COLUMN_LIBRO_AUTOR + " TEXT,"
                 + COLUMN_LIBRO_ISBN + " TEXT UNIQUE,"
-                + COLUMN_LIBRO_ESTADO + " TEXT DEFAULT 'disponible')")
+                + COLUMN_LIBRO_ESTADO + " TEXT DEFAULT 'disponible',"
+                + COLUMN_LIBRO_STOCK + " INTEGER DEFAULT 1)")
 
         val createUsuarios = ("CREATE TABLE " + TABLE_USUARIOS + "("
                 + COLUMN_USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -138,12 +141,94 @@ class MyDBHandler(
         return false
     }
 
-    fun loginUsuario(credencial: String, contrasena: String): Boolean {
+    fun loginUsuario(credencial: String, contrasena: String): com.fcc.biblioteca.model.Usuario? {
         val db = this.readableDatabase
-        val query = "SELECT * FROM $TABLE_CREDENCIALES WHERE ($COLUMN_CRED_CORREO = ? OR $COLUMN_CRED_USUARIO = ?) AND $COLUMN_CRED_CONTRASENA = ?"
+        val query = """
+            SELECT u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, u.$COLUMN_USUARIO_ROL 
+            FROM $TABLE_CREDENCIALES c 
+            INNER JOIN $TABLE_USUARIOS u ON c.$COLUMN_CRED_ID_USUARIO = u.$COLUMN_USUARIO_ID 
+            WHERE (c.$COLUMN_CRED_CORREO = ? OR c.$COLUMN_CRED_USUARIO = ?) AND c.$COLUMN_CRED_CONTRASENA = ?
+        """
         val cursor = db.rawQuery(query, arrayOf(credencial, credencial, contrasena))
-        val count = cursor.count
+        var usuario: com.fcc.biblioteca.model.Usuario? = null
+        if (cursor.moveToFirst()) {
+            usuario = com.fcc.biblioteca.model.Usuario(
+                id_usuario = cursor.getInt(0),
+                nombre = cursor.getString(1),
+                apellido1 = cursor.getString(2),
+                apellido2 = cursor.getString(3),
+                rol = cursor.getString(4)
+            )
+        }
         cursor.close()
-        return count > 0
+        return usuario
+    }
+
+    fun getLibros(): List<Libro> {
+        val list = mutableListOf<Libro>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_LIBROS", null)
+        if (cursor.moveToFirst()) {
+            do {
+                list.add(
+                    Libro(
+                        id_libro = cursor.getInt(0),
+                        titulo = cursor.getString(1),
+                        categoria = cursor.getString(2),
+                        autor = cursor.getString(3),
+                        isbn = cursor.getString(4),
+                        estado = cursor.getString(5),
+                        stock = cursor.getInt(6)
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
+    
+    fun deleteLibro(id: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_LIBROS, "$COLUMN_LIBRO_ID=?", arrayOf(id.toString()))
+    }
+    
+    fun updateLibroStock(id: Int, change: Int) {
+        val db = this.writableDatabase
+        db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = MAX(0, $COLUMN_LIBRO_STOCK + ?) WHERE $COLUMN_LIBRO_ID = ?", arrayOf(change, id))
+    }
+    
+    fun addLibro(titulo: String, autor: String, isbn: String, categoria: String, stock: Int): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_LIBRO_TITULO, titulo)
+            put(COLUMN_LIBRO_AUTOR, autor)
+            put(COLUMN_LIBRO_ISBN, isbn)
+            put(COLUMN_LIBRO_CATEGORIA, categoria)
+            put(COLUMN_LIBRO_STOCK, stock)
+        }
+        return try {
+            val res = db.insert(TABLE_LIBROS, null, values)
+            res != -1L
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun insertMockLibrosIfEmpty() {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_LIBROS", null)
+        var count = 0
+        if (cursor.moveToFirst()) count = cursor.getInt(0)
+        cursor.close()
+
+        if (count == 0) {
+            val wdb = this.writableDatabase
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7)")
+        }
     }
 }

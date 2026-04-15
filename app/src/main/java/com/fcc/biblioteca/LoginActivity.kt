@@ -28,9 +28,16 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             
-            val valid = dbHandler.loginUsuario(emailOrUser, pass)
-            if (valid) {
-                Toast.makeText(this, "Bienvenido", Toast.LENGTH_SHORT).show()
+            val usuario = dbHandler.loginUsuario(emailOrUser, pass)
+            if (usuario != null) {
+                Toast.makeText(this, "Bienvenido ${usuario.nombre}", Toast.LENGTH_SHORT).show()
+                val prefs = getSharedPreferences("BibliotecaPrefs", MODE_PRIVATE)
+                prefs.edit().apply {
+                    putInt("userId", usuario.id_usuario)
+                    putString("userName", usuario.nombre)
+                    putString("userRole", usuario.rol)
+                    apply()
+                }
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
