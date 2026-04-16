@@ -187,6 +187,19 @@ class MyDBHandler(
         return list
     }
     
+    fun getUniqueCategories(): List<String> {
+        val list = mutableListOf<String>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT DISTINCT $COLUMN_LIBRO_CATEGORIA FROM $TABLE_LIBROS WHERE $COLUMN_LIBRO_CATEGORIA IS NOT NULL AND $COLUMN_LIBRO_CATEGORIA != ''", null)
+        if (cursor.moveToFirst()) {
+            do {
+                list.add(cursor.getString(0))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
+    
     fun deleteLibro(id: Int) {
         val db = this.writableDatabase
         db.delete(TABLE_LIBROS, "$COLUMN_LIBRO_ID=?", arrayOf(id.toString()))

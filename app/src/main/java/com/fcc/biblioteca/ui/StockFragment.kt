@@ -33,6 +33,11 @@ class StockFragment : Fragment() {
         dbHandler = MyDBHandler(requireContext())
         setupRecyclerView()
         
+        // Setup categories autocomplete
+        val categories = dbHandler.getUniqueCategories()
+        val catAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
+        binding.etCategory.setAdapter(catAdapter)
+        
         binding.btnAddNew.setOnClickListener {
             binding.containerAddForm.visibility = if (binding.containerAddForm.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }

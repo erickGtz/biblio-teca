@@ -40,12 +40,12 @@
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
                     android:text="Agregar Nuevo Libro"
-                    android:textColor="#9333EA"
+                    android:textColor="@color/colorSecondary"
                     app:backgroundTint="@android:color/white"
                     app:cornerRadius="12dp"
                     app:icon="@android:drawable/ic_input_add"
-                    app:iconTint="#9333EA"
                     app:iconGravity="textStart"
+                    app:iconTint="@color/colorSecondary"
                     app:layout_constraintTop_toBottomOf="@id/tvStockTitle" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,11 +123,12 @@
                             android:padding="12dp"
                             android:layout_marginBottom="12dp"/>
                             
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/etCategory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Categoría"
+                            android:completionThreshold="1"
                             android:background="@drawable/bg_circle_icon"
                             android:backgroundTint="#F9FAFB"
                             android:padding="12dp"
@@ -149,9 +150,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Guardar Libro"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/white"
                             android:padding="12dp"
-                            app:backgroundTint="#9333EA"
+                            app:backgroundTint="@color/colorSecondary"
                             app:cornerRadius="12dp"/>
 
                     </LinearLayout>
