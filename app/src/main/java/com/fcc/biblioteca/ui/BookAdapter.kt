@@ -22,12 +22,14 @@ class BookAdapter(
             binding.tvBookAuthor.text = libro.autor ?: "Desconocido"
             binding.tvCategoryBadge.text = libro.categoria ?: "General"
             
-            if (libro.estado == "disponible") {
-                binding.tvStockStatus.text = "Disponible"
+            if (libro.stock > 0) {
+                binding.tvStockStatus.text = "Disponible: ${libro.stock}"
                 binding.tvStockStatus.setTextColor(android.graphics.Color.parseColor("#16A34A")) // Green
+                binding.root.alpha = 1.0f
             } else {
-                binding.tvStockStatus.text = "No disponible"
-                binding.tvStockStatus.setTextColor(android.graphics.Color.parseColor("#EA580C")) // Orange
+                binding.tvStockStatus.text = "Sin disponibilidad"
+                binding.tvStockStatus.setTextColor(android.graphics.Color.parseColor("#9CA3AF")) // Gray
+                binding.root.alpha = 0.5f
             }
             
             binding.btnDetails.setOnClickListener { onItemClick(libro) }

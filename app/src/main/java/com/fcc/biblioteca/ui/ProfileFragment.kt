@@ -36,6 +36,21 @@ class ProfileFragment : Fragment() {
         // Simulate email
         val baseName = name?.split(" ")?.firstOrNull()?.lowercase() ?: "usuario"
         binding.tvUserEmail.text = "$baseName@biblioteca.com"
+        
+        val userId = prefs.getInt("userId", -1)
+        if (userId != -1) {
+            val dbHandler = com.fcc.biblioteca.db.MyDBHandler(requireContext())
+            val count = dbHandler.getContadorPrestamos(userId)
+            binding.tvBooksLoaned.text = count.toString()
+            binding.tvActiveReserves.text = count.toString()
+        }
+
+        binding.cardActiveReserves.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(com.fcc.biblioteca.R.id.fragment_container, MyLoansFragment())
+                .addToBackStack(null)
+                .commit()
+        }
 
         binding.btnLogout.setOnClickListener {
             prefs.edit().clear().apply()

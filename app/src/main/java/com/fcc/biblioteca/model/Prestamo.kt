@@ -1,9 +1,10 @@
 package com.fcc.biblioteca.model
 
+import java.io.Serializable
+
 data class Prestamo(
     var id_prestamo: Int = 0,
-    var id_usuario: Int = 0,
-    var id_libro: Int = 0,
-    var fecha_inicio: String = "", // Format: YYYY-MM-DD
-    var fecha_fin: String? = null
-)
+    var libro: Libro,
+    var fechaInicio: String,
+    var fechaFin: String
+) : Serializable

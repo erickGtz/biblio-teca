@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <FrameLayout
+            android:id="@+id/coverContainer"
+            android:layout_width="70dp"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_book_cover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_book"
+                android:layout_gravity="center"
+                app:tint="#4F46E5" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvBookTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Título del Libro"
+            android:textColor="#111827"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/coverContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvLoanDates"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Desde: 2023-01-01\nHasta: 2023-01-15"
+            android:textColor="#4B5563"
+            android:textSize="13sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReadPdf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leer PDF"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="0dp"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="16dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/colorSecondary"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

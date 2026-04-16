@@ -182,6 +182,7 @@
                                     android:textColor="@color/colorPrimary"
                                     android:textSize="12sp" />
                                 <TextView
+                                    android:id="@+id/tvBooksLoaned"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
@@ -193,6 +194,7 @@
                             
                             <!-- Stat 2 -->
                             <LinearLayout
+                                android:id="@+id/cardActiveReserves"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -209,6 +211,7 @@
                                     android:textColor="@color/colorPrimary"
                                     android:textSize="12sp" />
                                 <TextView
+                                    android:id="@+id/tvActiveReserves"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
