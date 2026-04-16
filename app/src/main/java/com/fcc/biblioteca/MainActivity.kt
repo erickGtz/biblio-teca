@@ -35,6 +35,10 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(CatalogFragment())
                     true
                 }
+                R.id.nav_loans -> {
+                    loadFragment(com.fcc.biblioteca.ui.MyLoansFragment())
+                    true
+                }
                 R.id.nav_stock -> {
                     if (role == "admin") {
                         loadFragment(StockFragment())

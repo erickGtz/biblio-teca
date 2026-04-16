@@ -45,12 +45,6 @@ class ProfileFragment : Fragment() {
             binding.tvActiveReserves.text = count.toString()
         }
 
-        binding.cardActiveReserves.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(com.fcc.biblioteca.R.id.fragment_container, MyLoansFragment())
-                .addToBackStack(null)
-                .commit()
-        }
 
         binding.btnLogout.setOnClickListener {
             prefs.edit().clear().apply()

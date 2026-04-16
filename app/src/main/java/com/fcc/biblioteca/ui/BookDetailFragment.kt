@@ -59,8 +59,8 @@ class BookDetailFragment : Fragment() {
             val userId = prefs.getInt("userId", -1)
             
             if (userId != -1 && libro != null) {
-                val success = dbHandler.prestarLibro(userId, libro!!.id_libro)
-                if (success) {
+                val status = dbHandler.prestarLibro(userId, libro!!.id_libro)
+                if (status == 1) {
                     Toast.makeText(requireContext(), "Préstamo registrado exitosamente", Toast.LENGTH_SHORT).show()
                     libro!!.stock -= 1
                     binding.tvDetailStock.text = "Stock disponible: ${libro!!.stock}"
@@ -68,6 +68,8 @@ class BookDetailFragment : Fragment() {
                         binding.btnReserveBook.isEnabled = false
                         binding.btnReserveBook.text = "Sin stock"
                     }
+                } else if (status == 0) {
+                    Toast.makeText(requireContext(), "Límite: Ya tienes un ejemplar de este libro reservado", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(requireContext(), "Error al registrar el préstamo", Toast.LENGTH_SHORT).show()
                 }

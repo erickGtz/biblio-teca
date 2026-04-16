@@ -14,7 +14,7 @@ class MyDBHandler(
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
     companion object {
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 5
         private const val DATABASE_NAME = "biblioteca_personal.db"
 
         // TABLE LIBROS
@@ -249,10 +249,21 @@ class MyDBHandler(
         }
     }
 
-    fun prestarLibro(idUsuario: Int, idLibro: Int): Boolean {
+    fun prestarLibro(idUsuario: Int, idLibro: Int): Int {
         val db = this.writableDatabase
         db.beginTransaction()
         try {
+            val countCursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_PRESTAMOS WHERE $COLUMN_PRESTAMO_ID_USUARIO = ? AND $COLUMN_PRESTAMO_ID_LIBRO = ?", arrayOf(idUsuario.toString(), idLibro.toString()))
+            var alreadyBorrowed = false
+            if (countCursor.moveToFirst()) {
+                alreadyBorrowed = countCursor.getInt(0) > 0
+            }
+            countCursor.close()
+            
+            if (alreadyBorrowed) {
+                return 0
+            }
+
             val cursor = db.rawQuery("SELECT $COLUMN_LIBRO_STOCK FROM $TABLE_LIBROS WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro.toString()))
             var stock = 0
             if (cursor.moveToFirst()) {
@@ -277,7 +288,7 @@ class MyDBHandler(
                 if (res != -1L) {
                     db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK - 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro))
                     db.setTransactionSuccessful()
-                    return true
+                    return 1
                 }
             }
         } catch (e: Exception) {
@@ -285,7 +296,7 @@ class MyDBHandler(
         } finally {
             db.endTransaction()
         }
-        return false
+        return -1
     }
 
     fun getPrestamosPorUsuario(idUsuario: Int): List<com.fcc.biblioteca.model.Prestamo> {
