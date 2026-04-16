@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/pageBg">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                     android:layout_marginStart="16dp"
                     android:text="Detalle del Libro"
                     android:textColor="@android:color/white"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/btnBack"
                     app:layout_constraintStart_toEndOf="@id/btnBack"
@@ -86,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:text="Título del libro"
                         android:textAlignment="center"
-                        android:textColor="#111827"
+                        android:textColor="@color/textPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
@@ -97,7 +97,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Autor Desconocido"
                         android:textAlignment="center"
-                        android:textColor="#4B5563"
+                        android:textColor="@color/textSecondary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -107,7 +107,7 @@
                         android:layout_marginTop="16dp"
                         android:text="Sinopsis del libro"
                         android:textAlignment="center"
-                        android:textColor="#4B5563"
+                        android:textColor="@color/textSecondary"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -134,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="ISBN: 000-0000000"
-                            android:textColor="#6B7280"
+                            android:textColor="@color/textTertiary"
                             android:textSize="14sp" />
 
                         <TextView
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="Stock disponible: 0"
-                            android:textColor="#374151"
+                            android:textColor="@color/textPrimary"
                             android:textSize="14sp" />
                     </LinearLayout>
 

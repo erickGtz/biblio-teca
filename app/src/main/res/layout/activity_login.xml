@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/pageBg">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/biblioteca_digital"
-                        android:textColor="#111827"
+                        android:textColor="@color/textPrimary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="32dp"
                         android:text="@string/inicia_sesion_continuar"
-                        android:textColor="#6B7280"
+                        android:textColor="@color/textTertiary"
                         android:textSize="14sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         android:hint="@string/email"
-                        app:boxBackgroundColor="#F9FAFB"
+                        app:boxBackgroundColor="@color/pageBg"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
@@ -85,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="24dp"
                         android:hint="@string/contrasena"
-                        app:boxBackgroundColor="#F9FAFB"
+                        app:boxBackgroundColor="@color/pageBg"
                         app:boxCornerRadiusBottomEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"

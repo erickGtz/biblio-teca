@@ -6,7 +6,7 @@
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@android:color/white">
+    app:cardBackgroundColor="@color/cardBg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Cien años de soledad"
-            android:textColor="#111827"
+            android:textColor="@color/textPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:ellipsize="end"
@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Gabriel García Márquez"
-            android:textColor="#4B5563"
+            android:textColor="@color/textSecondary"
             android:textSize="14sp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -63,14 +63,16 @@
             android:id="@+id/tvCategoryBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ficción"
-            android:textColor="#1D4ED8"
-            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/bg_circle_icon"
-            android:backgroundTint="#DBEAFE"
+            android:backgroundTint="@color/badgeBg"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:layout_marginTop="8dp"
+            android:text="Ficción"
+            android:textColor="@color/badgeText"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvStockStatus"
             app:layout_constraintStart_toStartOf="@id/tvBookTitle"
             app:layout_constraintTop_toBottomOf="@id/tvBookAuthor" />
 
@@ -79,11 +81,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12 disponibles"
-            android:textColor="#16A34A"
+            android:textColor="@color/colorSuccess"
             android:textSize="14sp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDetails"
@@ -99,7 +100,7 @@
             android:paddingVertical="6dp"
             android:paddingHorizontal="16dp"
             app:cornerRadius="16dp"
-            app:backgroundTint="#2563EB"
+            app:backgroundTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 

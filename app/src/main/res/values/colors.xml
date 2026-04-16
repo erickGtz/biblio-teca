@@ -23,4 +23,14 @@
     <color name="cardBackground">#FFFFFF</color>
     
     <color name="bgLightGray">#F5F5F5</color>
+    
+    <!-- Day Mode Semantics matching layouts -->
+    <color name="pageBg">#F9FAFB</color>
+    <color name="cardBg">#FFFFFF</color>
+    <color name="textPrimary">#111827</color>
+    <color name="textSecondary">#4B5563</color>
+    <color name="textTertiary">#6B7280</color>
+    <color name="badgeBg">#DBEAFE</color>
+    <color name="badgeText">#1D4ED8</color>
+    <color name="iconTint">#4F46E5</color>
 </resources>

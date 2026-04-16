@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/pageBg">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Nuevo Libro"
-                                android:textColor="#111827"
+                                android:textColor="@color/textPrimary"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:layout_centerVertical="true"/>
@@ -99,7 +99,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Título"
                             android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="#F9FAFB"
+                            android:backgroundTint="@color/pageBg"
                             android:padding="12dp"
                             android:layout_marginBottom="12dp"/>
                         
@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Autor"
                             android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="#F9FAFB"
+                            android:backgroundTint="@color/pageBg"
                             android:padding="12dp"
                             android:layout_marginBottom="12dp"/>
                             
@@ -119,7 +119,7 @@
                             android:layout_height="wrap_content"
                             android:hint="ISBN"
                             android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="#F9FAFB"
+                            android:backgroundTint="@color/pageBg"
                             android:padding="12dp"
                             android:layout_marginBottom="12dp"/>
                             
@@ -130,7 +130,7 @@
                             android:hint="Categoría"
                             android:completionThreshold="1"
                             android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="#F9FAFB"
+                            android:backgroundTint="@color/pageBg"
                             android:padding="12dp"
                             android:layout_marginBottom="12dp"/>
                             
@@ -141,7 +141,7 @@
                             android:hint="Stock inicial"
                             android:inputType="number"
                             android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="#F9FAFB"
+                            android:backgroundTint="@color/pageBg"
                             android:padding="12dp"
                             android:layout_marginBottom="16dp"/>
 

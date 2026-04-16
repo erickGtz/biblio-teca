@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9FAFB">
+    android:background="@color/pageBg">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -140,7 +140,7 @@
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/cardBg"
                     android:layout_marginBottom="16dp">
                     
                     <LinearLayout
@@ -153,7 +153,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Estadísticas"
-                            android:textColor="#111827"
+                            android:textColor="@color/textPrimary"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:layout_marginBottom="16dp"/>
@@ -186,7 +186,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:textColor="#111827"
+                                    android:textColor="@color/textPrimary"
                                     android:textStyle="bold"
                                     android:textSize="18sp"
                                     android:layout_marginTop="8dp" />
@@ -215,7 +215,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:textColor="#111827"
+                                    android:textColor="@color/textPrimary"
                                     android:textStyle="bold"
                                     android:textSize="18sp"
                                     android:layout_marginTop="8dp" />
@@ -231,7 +231,7 @@
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/cardBg"
                     android:layout_marginBottom="24dp">
 
                     <LinearLayout
@@ -252,7 +252,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cerrar Sesión"
-                            android:textColor="#DC2626"
+                            android:textColor="@color/colorError"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:layout_marginStart="12dp" />
