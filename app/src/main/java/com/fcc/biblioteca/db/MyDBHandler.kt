@@ -52,6 +52,20 @@ class MyDBHandler(
         const val COLUMN_CRED_CORREO = "correo"
         const val COLUMN_CRED_USUARIO = "usuario"
         const val COLUMN_CRED_CONTRASENA = "contrasena"
+
+        private val coverList = listOf("cover_cien_anos", "cover_quijote", "cover_principito", "cover_sapiens", "cover_davinci", "cover_1984")
+        private var lastCoverIndex = -1
+        
+        fun getRandomCover(): String {
+            var newIndex = coverList.indices.random()
+            if (lastCoverIndex != -1) {
+                while (newIndex == lastCoverIndex) {
+                    newIndex = coverList.indices.random()
+                }
+            }
+            lastCoverIndex = newIndex
+            return coverList[newIndex]
+        }
     }
 
     override fun onConfigure(db: SQLiteDatabase) {
@@ -225,6 +239,7 @@ class MyDBHandler(
             put(COLUMN_LIBRO_CATEGORIA, categoria)
             put(COLUMN_LIBRO_STOCK, stock)
             put(COLUMN_LIBRO_SINOPSIS, sinopsis)
+            put(COLUMN_LIBRO_IMAGEN, getRandomCover())
         }
         return try {
             val res = db.insert(TABLE_LIBROS, null, values)
