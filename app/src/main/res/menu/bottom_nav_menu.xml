@@ -11,7 +11,7 @@
     <item
         android:id="@+id/nav_loans"
         android:icon="@drawable/ic_loans_nav"
-        android:title="Reservas" />
+        android:title="Mis Libros" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_profile_nav"

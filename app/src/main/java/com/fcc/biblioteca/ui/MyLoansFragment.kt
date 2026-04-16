@@ -50,9 +50,6 @@ class MyLoansFragment : Fragment() {
             binding.tvEmptyState.visibility = View.GONE
         }
         
-        binding.btnBack.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
-        }
     }
 
     override fun onDestroyView() {
