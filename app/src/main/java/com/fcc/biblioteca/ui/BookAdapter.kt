@@ -22,6 +22,14 @@ class BookAdapter(
             binding.tvBookAuthor.text = libro.autor ?: "Desconocido"
             binding.tvCategoryBadge.text = libro.categoria ?: "General"
             
+            val ctx = binding.root.context
+            val resId = ctx.resources.getIdentifier(libro.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
+            if (resId != 0 && libro.imagen != null) {
+                binding.ivCover.setImageResource(resId)
+            } else {
+                binding.ivCover.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+            }
+            
             if (libro.stock > 0) {
                 binding.tvStockStatus.text = "Disponible: ${libro.stock}"
                 binding.tvStockStatus.setTextColor(android.graphics.Color.parseColor("#16A34A")) // Green

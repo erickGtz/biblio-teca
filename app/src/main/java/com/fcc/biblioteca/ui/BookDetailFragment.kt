@@ -35,10 +35,18 @@ class BookDetailFragment : Fragment() {
         libro?.let {
             binding.tvDetailTitle.text = it.titulo
             binding.tvDetailAuthor.text = it.autor ?: "Autor Desconocido"
-            binding.tvDetailCategory.text = it.categoria ?: "General"
+            binding.tvDetailCategory.text = libro!!.categoria ?: "Sin categoría"
             binding.tvDetailSinopsis.text = it.sinopsis ?: "Sin descripción disponible."
-            binding.tvDetailIsbn.text = "ISBN: ${it.isbn ?: "N/A"}"
-            binding.tvDetailStock.text = "Stock disponible: ${it.stock}"
+            binding.tvDetailIsbn.text = "ISBN: ${libro!!.isbn}"
+            binding.tvDetailStock.text = "Stock disponible: ${libro!!.stock}"
+            
+            val ctx = requireContext()
+            val resId = ctx.resources.getIdentifier(libro!!.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
+            if (resId != 0 && libro!!.imagen != null) {
+                binding.ivCover.setImageResource(resId)
+            } else {
+                binding.ivCover.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+            }
             
             if (it.stock > 0) {
                 binding.btnReserveBook.isEnabled = true

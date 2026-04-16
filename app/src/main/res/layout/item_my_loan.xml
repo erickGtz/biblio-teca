@@ -23,11 +23,11 @@
             app:layout_constraintBottom_toBottomOf="parent">
             
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_book"
-                android:layout_gravity="center"
-                app:tint="#4F46E5" />
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_book_cover"
+                android:scaleType="centerCrop" />
         </FrameLayout>
 
         <TextView
@@ -73,6 +73,25 @@
             app:backgroundTint="@color/colorSecondary"
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="@id/tvBookTitle"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Devolver"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="0dp"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="16dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#16A34A"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/btnReadPdf"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

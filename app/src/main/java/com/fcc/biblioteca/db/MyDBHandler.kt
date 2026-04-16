@@ -14,7 +14,7 @@ class MyDBHandler(
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
     companion object {
-        private const val DATABASE_VERSION = 5
+        private const val DATABASE_VERSION = 6
         private const val DATABASE_NAME = "biblioteca_personal.db"
 
         // TABLE LIBROS
@@ -27,6 +27,7 @@ class MyDBHandler(
         const val COLUMN_LIBRO_ESTADO = "estado"
         const val COLUMN_LIBRO_STOCK = "stock"
         const val COLUMN_LIBRO_SINOPSIS = "sinopsis"
+        const val COLUMN_LIBRO_IMAGEN = "imagen"
 
         // TABLE USUARIOS
         const val TABLE_USUARIOS = "usuarios"
@@ -67,7 +68,8 @@ class MyDBHandler(
                 + COLUMN_LIBRO_ISBN + " TEXT UNIQUE,"
                 + COLUMN_LIBRO_ESTADO + " TEXT DEFAULT 'disponible',"
                 + COLUMN_LIBRO_STOCK + " INTEGER DEFAULT 1,"
-                + COLUMN_LIBRO_SINOPSIS + " TEXT)")
+                + COLUMN_LIBRO_SINOPSIS + " TEXT,"
+                + COLUMN_LIBRO_IMAGEN + " TEXT)")
 
         val createUsuarios = ("CREATE TABLE " + TABLE_USUARIOS + "("
                 + COLUMN_USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -181,7 +183,8 @@ class MyDBHandler(
                         isbn = cursor.getString(4),
                         estado = cursor.getString(5),
                         stock = cursor.getInt(6),
-                        sinopsis = cursor.getString(7)
+                        sinopsis = cursor.getString(7),
+                        imagen = cursor.getString(8)
                     )
                 )
             } while (cursor.moveToNext())
@@ -240,12 +243,12 @@ class MyDBHandler(
 
         if (count == 0) {
             val wdb = this.writableDatabase
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12, 'La epopeya de la familia Buendía en el mítico pueblo de Macondo, obra cumbre del realismo mágico.')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8, 'Las aventuras y desventuras del hidalgo don Quijote y su fiel escudero Sancho Panza.')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15, 'Un piloto perdido en el Sahara se encuentra con un pequeño príncipe que viaja de planeta en planeta.')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6, 'Una breve historia de la humanidad, desde los primeros homínidos hasta la revolución científica y tecnológica.')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10, 'Un asesinato en el Louvre conduce a un profundo misterio que pone en juego los cimientos del cristianismo.')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7, 'Una distopía en la que un estado totalitario ejerce un control absoluto sobre el pensamiento y vida de sus ciudadanos.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12, 'La epopeya de la familia Buendía en el mítico pueblo de Macondo, obra cumbre del realismo mágico.', 'cover_cien_anos')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8, 'Las aventuras y desventuras del hidalgo don Quijote y su fiel escudero Sancho Panza.', 'cover_quijote')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15, 'Un piloto perdido en el Sahara se encuentra con un pequeño príncipe que viaja de planeta en planeta.', 'cover_principito')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6, 'Una breve historia de la humanidad, desde los primeros homínidos hasta la revolución científica y tecnológica.', 'cover_sapiens')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10, 'Un asesinato en el Louvre conduce a un profundo misterio que pone en juego los cimientos del cristianismo.', 'cover_davinci')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7, 'Una distopía en la que un estado totalitario ejerce un control absoluto sobre el pensamiento y vida de sus ciudadanos.', 'cover_1984')")
         }
     }
 
@@ -304,7 +307,7 @@ class MyDBHandler(
         val db = this.readableDatabase
         val query = """
             SELECT p.$COLUMN_PRESTAMO_ID, p.$COLUMN_PRESTAMO_FECHA_INICIO, p.$COLUMN_PRESTAMO_FECHA_FIN, 
-                   l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_ISBN, l.$COLUMN_LIBRO_ESTADO, l.$COLUMN_LIBRO_STOCK, l.$COLUMN_LIBRO_SINOPSIS
+                   l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_ISBN, l.$COLUMN_LIBRO_ESTADO, l.$COLUMN_LIBRO_STOCK, l.$COLUMN_LIBRO_SINOPSIS, l.$COLUMN_LIBRO_IMAGEN
             FROM $TABLE_PRESTAMOS p
             INNER JOIN $TABLE_LIBROS l ON p.$COLUMN_PRESTAMO_ID_LIBRO = l.$COLUMN_LIBRO_ID
             WHERE p.$COLUMN_PRESTAMO_ID_USUARIO = ?
@@ -320,7 +323,8 @@ class MyDBHandler(
                     isbn = cursor.getString(7),
                     estado = cursor.getString(8),
                     stock = cursor.getInt(9),
-                    sinopsis = cursor.getString(10)
+                    sinopsis = cursor.getString(10),
+                    imagen = cursor.getString(11)
                 )
                 list.add(
                     com.fcc.biblioteca.model.Prestamo(
@@ -343,5 +347,42 @@ class MyDBHandler(
         if (cursor.moveToFirst()) count = cursor.getInt(0)
         cursor.close()
         return count
+    }
+
+    fun procesarDevolucionesExpiradas() {
+        val db = this.writableDatabase
+        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+        db.beginTransaction()
+        try {
+            val cursor = db.rawQuery("SELECT $COLUMN_PRESTAMO_ID, $COLUMN_PRESTAMO_ID_LIBRO FROM $TABLE_PRESTAMOS WHERE $COLUMN_PRESTAMO_FECHA_FIN < ?", arrayOf(today))
+            if (cursor.moveToFirst()) {
+                do {
+                    val pId = cursor.getInt(0)
+                    val lId = cursor.getInt(1)
+                    db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK + 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(lId))
+                    db.delete(TABLE_PRESTAMOS, "$COLUMN_PRESTAMO_ID = ?", arrayOf(pId.toString()))
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+            db.setTransactionSuccessful()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun devolverLibro(idPrestamo: Int, idLibro: Int) {
+        val db = this.writableDatabase
+        db.beginTransaction()
+        try {
+            db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK + 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro))
+            db.delete(TABLE_PRESTAMOS, "$COLUMN_PRESTAMO_ID = ?", arrayOf(idPrestamo.toString()))
+            db.setTransactionSuccessful()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            db.endTransaction()
+        }
     }
 }

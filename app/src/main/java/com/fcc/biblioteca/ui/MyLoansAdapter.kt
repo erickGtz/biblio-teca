@@ -8,7 +8,8 @@ import com.fcc.biblioteca.model.Prestamo
 
 class MyLoansAdapter(
     private var prestamos: List<Prestamo>,
-    private val onPdfClick: (Prestamo) -> Unit
+    private val onPdfClick: (Prestamo) -> Unit,
+    private val onReturnClick: (Prestamo) -> Unit
 ) : RecyclerView.Adapter<MyLoansAdapter.ViewHolder>() {
 
     fun updateList(newList: List<Prestamo>) {
@@ -21,8 +22,19 @@ class MyLoansAdapter(
             binding.tvBookTitle.text = prestamo.libro.titulo
             binding.tvLoanDates.text = "Inicio: ${prestamo.fechaInicio}\nVencimiento: ${prestamo.fechaFin}"
             
+            val ctx = binding.root.context
+            val resId = ctx.resources.getIdentifier(prestamo.libro.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
+            if (resId != 0 && prestamo.libro.imagen != null) {
+                binding.ivCover.setImageResource(resId)
+            } else {
+                binding.ivCover.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+            }
+            
             binding.btnReadPdf.setOnClickListener {
                 onPdfClick(prestamo)
+            }
+            binding.btnReturn.setOnClickListener {
+                onReturnClick(prestamo)
             }
         }
     }

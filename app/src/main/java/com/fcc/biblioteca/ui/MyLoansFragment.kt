@@ -30,16 +30,25 @@ class MyLoansFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         dbHandler = MyDBHandler(requireContext())
+        dbHandler.procesarDevolucionesExpiradas()
         
         val prefs = requireActivity().getSharedPreferences("BibliotecaPrefs", Context.MODE_PRIVATE)
         val userId = prefs.getInt("userId", -1)
         
-        val loans = if (userId != -1) dbHandler.getPrestamosPorUsuario(userId) else emptyList()
+        var loans = if (userId != -1) dbHandler.getPrestamosPorUsuario(userId) else emptyList()
         
-        adapter = MyLoansAdapter(loans) { prestamo ->
+        adapter = MyLoansAdapter(loans, { prestamo ->
             // SIMULATING PDF OPENING
             Toast.makeText(requireContext(), "Abriendo PDF de '${prestamo.libro.titulo}'...", Toast.LENGTH_LONG).show()
-        }
+        }, { prestamo ->
+            dbHandler.devolverLibro(prestamo.id_prestamo, prestamo.libro.id_libro)
+            Toast.makeText(requireContext(), "Libro devuelto con éxito", Toast.LENGTH_SHORT).show()
+            loans = dbHandler.getPrestamosPorUsuario(userId)
+            adapter.updateList(loans)
+            if (loans.isEmpty()) {
+                binding.tvEmptyState.visibility = View.VISIBLE
+            }
+        })
         
         binding.recyclerLoans.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerLoans.adapter = adapter

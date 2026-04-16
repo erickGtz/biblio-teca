@@ -66,17 +66,18 @@
                     android:padding="24dp">
 
                     <FrameLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_width="160dp"
+                        android:layout_height="240dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="24dp"
-                        android:background="@drawable/bg_circle_icon"
-                        android:padding="24dp">
+                        android:background="@drawable/bg_book_cover">
                         
                         <ImageView
+                            android:id="@+id/ivCover"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/ic_book" />
+                            android:src="@drawable/bg_book_cover"
+                            android:scaleType="centerCrop"/>
                     </FrameLayout>
 
                     <TextView
