@@ -49,12 +49,12 @@
             android:id="@+id/tvLoanDates"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Desde: 2023-01-01\nHasta: 2023-01-15"
             android:textColor="@color/textSecondary"
             android:textSize="13sp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
             app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
 
         <com.google.android.material.button.MaterialButton
@@ -62,40 +62,42 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Leer PDF"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
+            android:layout_marginTop="9dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:minHeight="0dp"
-            android:paddingVertical="6dp"
             android:paddingHorizontal="16dp"
-            app:cornerRadius="16dp"
+            android:paddingVertical="6dp"
+            android:text="Leer PDF"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
             app:backgroundTint="@color/colorPrimary"
-            android:layout_marginTop="12dp"
+            app:cornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvBookTitle"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLoanDates" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReturn"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Devolver"
-            android:textColor="@color/colorPrimary"
-            app:strokeColor="@color/colorPrimary"
-            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="9dp"
+            android:backgroundTint="@android:color/transparent"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:minHeight="0dp"
-            android:paddingVertical="6dp"
             android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp"
+            android:text="Devolver"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
             app:cornerRadius="16dp"
-            android:backgroundTint="@android:color/transparent"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnReadPdf"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLoanDates"
+            app:strokeColor="@color/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
