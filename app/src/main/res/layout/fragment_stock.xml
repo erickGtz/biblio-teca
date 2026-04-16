@@ -61,7 +61,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="8dp">
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@color/cardBg"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -93,57 +95,116 @@
                                 android:layout_centerVertical="true"/>
                         </RelativeLayout>
 
-                        <EditText
-                            android:id="@+id/etTitle"
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
                             android:hint="Título"
-                            android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="@color/pageBg"
-                            android:padding="12dp"
-                            android:layout_marginBottom="12dp"/>
+                            app:boxBackgroundColor="@color/pageBg"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeWidth="0dp"
+                            app:hintTextColor="@color/colorPrimary">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:padding="16dp"
+                                android:textColor="@color/textPrimary" />
+                        </com.google.android.material.textfield.TextInputLayout>
                         
-                        <EditText
-                            android:id="@+id/etAuthor"
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
                             android:hint="Autor"
-                            android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="@color/pageBg"
-                            android:padding="12dp"
-                            android:layout_marginBottom="12dp"/>
+                            app:boxBackgroundColor="@color/pageBg"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeWidth="0dp"
+                            app:hintTextColor="@color/colorPrimary">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etAuthor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:padding="16dp"
+                                android:textColor="@color/textPrimary" />
+                        </com.google.android.material.textfield.TextInputLayout>
                             
-                        <EditText
-                            android:id="@+id/etIsbn"
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
                             android:hint="ISBN"
-                            android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="@color/pageBg"
-                            android:padding="12dp"
-                            android:layout_marginBottom="12dp"/>
+                            app:boxBackgroundColor="@color/pageBg"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeWidth="0dp"
+                            app:hintTextColor="@color/colorPrimary">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etIsbn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:padding="16dp"
+                                android:textColor="@color/textPrimary" />
+                        </com.google.android.material.textfield.TextInputLayout>
                             
-                        <AutoCompleteTextView
-                            android:id="@+id/etCategory"
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
                             android:hint="Categoría"
-                            android:completionThreshold="1"
-                            android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="@color/pageBg"
-                            android:padding="12dp"
-                            android:layout_marginBottom="12dp"/>
+                            app:boxBackgroundColor="@color/pageBg"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeWidth="0dp"
+                            app:hintTextColor="@color/colorPrimary">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/etCategory"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:completionThreshold="1"
+                                android:padding="16dp"
+                                android:textColor="@color/textPrimary" 
+                                android:background="@null" />
+                        </com.google.android.material.textfield.TextInputLayout>
                             
-                        <EditText
-                            android:id="@+id/etStock"
+                        <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
                             android:hint="Stock inicial"
-                            android:inputType="number"
-                            android:background="@drawable/bg_circle_icon"
-                            android:backgroundTint="@color/pageBg"
-                            android:padding="12dp"
-                            android:layout_marginBottom="16dp"/>
+                            app:boxBackgroundColor="@color/pageBg"
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeWidth="0dp"
+                            app:hintTextColor="@color/colorPrimary">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etStock"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:padding="16dp"
+                                android:textColor="@color/textPrimary" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnSaveBook"

@@ -57,11 +57,11 @@ class StockFragment : Fragment() {
             if (title.isNotEmpty() && isbn.isNotEmpty()) {
                 val success = dbHandler.addLibro(title, author, isbn, category, stock)
                 if (success) {
-                    binding.etTitle.text.clear()
-                    binding.etAuthor.text.clear()
-                    binding.etIsbn.text.clear()
+                    binding.etTitle.text?.clear()
+                    binding.etAuthor.text?.clear()
+                    binding.etIsbn.text?.clear()
                     binding.etCategory.text.clear()
-                    binding.etStock.text.clear()
+                    binding.etStock.text?.clear()
                     binding.containerAddForm.visibility = View.GONE
                     Toast.makeText(requireContext(), "Libro agregado", Toast.LENGTH_SHORT).show()
                     loadBooks()
