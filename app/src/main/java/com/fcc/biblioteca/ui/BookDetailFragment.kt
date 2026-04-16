@@ -63,27 +63,34 @@ class BookDetailFragment : Fragment() {
         }
         
         binding.btnReserveBook.setOnClickListener {
-            val prefs = requireActivity().getSharedPreferences("BibliotecaPrefs", Context.MODE_PRIVATE)
-            val userId = prefs.getInt("userId", -1)
-            
-            if (userId != -1 && libro != null) {
-                val status = dbHandler.prestarLibro(userId, libro!!.id_libro)
-                if (status == 1) {
-                    Toast.makeText(requireContext(), "Préstamo registrado exitosamente", Toast.LENGTH_SHORT).show()
-                    libro!!.stock -= 1
-                    binding.tvDetailStock.text = "Stock disponible: ${libro!!.stock}"
-                    if (libro!!.stock <= 0) {
-                        binding.btnReserveBook.isEnabled = false
-                        binding.btnReserveBook.text = "Sin stock"
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Solicitar Préstamo")
+                .setMessage("¿Deseas confirmar la solicitud de préstamo para '${libro?.titulo}'?")
+                .setPositiveButton("Confirmar") { _, _ ->
+                    val prefs = requireActivity().getSharedPreferences("BibliotecaPrefs", Context.MODE_PRIVATE)
+                    val userId = prefs.getInt("userId", -1)
+                    
+                    if (userId != -1 && libro != null) {
+                        val status = dbHandler.prestarLibro(userId, libro!!.id_libro)
+                        if (status == 1) {
+                            Toast.makeText(requireContext(), "Préstamo registrado exitosamente", Toast.LENGTH_SHORT).show()
+                            libro!!.stock -= 1
+                            binding.tvDetailStock.text = "Stock disponible: ${libro!!.stock}"
+                            if (libro!!.stock <= 0) {
+                                binding.btnReserveBook.isEnabled = false
+                                binding.btnReserveBook.text = "Sin stock"
+                            }
+                        } else if (status == 0) {
+                            Toast.makeText(requireContext(), "Límite: Ya tienes un ejemplar de este libro reservado", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Error al registrar el préstamo", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Error de sesión", Toast.LENGTH_SHORT).show()
                     }
-                } else if (status == 0) {
-                    Toast.makeText(requireContext(), "Límite: Ya tienes un ejemplar de este libro reservado", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(requireContext(), "Error al registrar el préstamo", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), "Error de sesión", Toast.LENGTH_SHORT).show()
-            }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 

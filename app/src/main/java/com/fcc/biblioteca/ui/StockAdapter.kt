@@ -34,7 +34,12 @@ class StockAdapter(
                 }
             }
             binding.btnDelete.setOnClickListener {
-                onDeleteBook(libro.id_libro)
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(binding.root.context)
+                    .setTitle("Eliminar Libro")
+                    .setMessage("¿Estás de acuerdo en eliminar el libro '${libro.titulo}' del catálogo?")
+                    .setPositiveButton("Eliminar") { _, _ -> onDeleteBook(libro.id_libro) }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         }
     }

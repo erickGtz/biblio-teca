@@ -34,7 +34,12 @@ class MyLoansAdapter(
                 onPdfClick(prestamo)
             }
             binding.btnReturn.setOnClickListener {
-                onReturnClick(prestamo)
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(binding.root.context)
+                    .setTitle("Devolver Libro")
+                    .setMessage("¿Quieres devolver '${prestamo.libro.titulo}' y liberar el ejemplar?")
+                    .setPositiveButton("Devolver") { _, _ -> onReturnClick(prestamo) }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         }
     }
