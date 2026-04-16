@@ -14,7 +14,7 @@ class MyDBHandler(
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
     companion object {
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
         private const val DATABASE_NAME = "biblioteca_personal.db"
 
         // TABLE LIBROS
@@ -26,6 +26,7 @@ class MyDBHandler(
         const val COLUMN_LIBRO_ISBN = "isbn"
         const val COLUMN_LIBRO_ESTADO = "estado"
         const val COLUMN_LIBRO_STOCK = "stock"
+        const val COLUMN_LIBRO_SINOPSIS = "sinopsis"
 
         // TABLE USUARIOS
         const val TABLE_USUARIOS = "usuarios"
@@ -65,7 +66,8 @@ class MyDBHandler(
                 + COLUMN_LIBRO_AUTOR + " TEXT,"
                 + COLUMN_LIBRO_ISBN + " TEXT UNIQUE,"
                 + COLUMN_LIBRO_ESTADO + " TEXT DEFAULT 'disponible',"
-                + COLUMN_LIBRO_STOCK + " INTEGER DEFAULT 1)")
+                + COLUMN_LIBRO_STOCK + " INTEGER DEFAULT 1,"
+                + COLUMN_LIBRO_SINOPSIS + " TEXT)")
 
         val createUsuarios = ("CREATE TABLE " + TABLE_USUARIOS + "("
                 + COLUMN_USUARIO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -178,7 +180,8 @@ class MyDBHandler(
                         autor = cursor.getString(3),
                         isbn = cursor.getString(4),
                         estado = cursor.getString(5),
-                        stock = cursor.getInt(6)
+                        stock = cursor.getInt(6),
+                        sinopsis = cursor.getString(7)
                     )
                 )
             } while (cursor.moveToNext())
@@ -210,7 +213,7 @@ class MyDBHandler(
         db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = MAX(0, $COLUMN_LIBRO_STOCK + ?) WHERE $COLUMN_LIBRO_ID = ?", arrayOf(change, id))
     }
     
-    fun addLibro(titulo: String, autor: String, isbn: String, categoria: String, stock: Int): Boolean {
+    fun addLibro(titulo: String, autor: String, isbn: String, categoria: String, stock: Int, sinopsis: String? = null): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_LIBRO_TITULO, titulo)
@@ -218,6 +221,7 @@ class MyDBHandler(
             put(COLUMN_LIBRO_ISBN, isbn)
             put(COLUMN_LIBRO_CATEGORIA, categoria)
             put(COLUMN_LIBRO_STOCK, stock)
+            put(COLUMN_LIBRO_SINOPSIS, sinopsis)
         }
         return try {
             val res = db.insert(TABLE_LIBROS, null, values)
@@ -236,12 +240,44 @@ class MyDBHandler(
 
         if (count == 0) {
             val wdb = this.writableDatabase
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12)")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8)")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15)")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6)")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10)")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7)")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12, 'La epopeya de la familia Buendía en el mítico pueblo de Macondo, obra cumbre del realismo mágico.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8, 'Las aventuras y desventuras del hidalgo don Quijote y su fiel escudero Sancho Panza.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15, 'Un piloto perdido en el Sahara se encuentra con un pequeño príncipe que viaja de planeta en planeta.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6, 'Una breve historia de la humanidad, desde los primeros homínidos hasta la revolución científica y tecnológica.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10, 'Un asesinato en el Louvre conduce a un profundo misterio que pone en juego los cimientos del cristianismo.')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7, 'Una distopía en la que un estado totalitario ejerce un control absoluto sobre el pensamiento y vida de sus ciudadanos.')")
         }
+    }
+
+    fun prestarLibro(idUsuario: Int, idLibro: Int): Boolean {
+        val db = this.writableDatabase
+        db.beginTransaction()
+        try {
+            val cursor = db.rawQuery("SELECT $COLUMN_LIBRO_STOCK FROM $TABLE_LIBROS WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro.toString()))
+            var stock = 0
+            if (cursor.moveToFirst()) {
+                stock = cursor.getInt(0)
+            }
+            cursor.close()
+            
+            if (stock > 0) {
+                val prestamoValues = android.content.ContentValues().apply {
+                    put(COLUMN_PRESTAMO_ID_USUARIO, idUsuario)
+                    put(COLUMN_PRESTAMO_ID_LIBRO, idLibro)
+                    put(COLUMN_PRESTAMO_FECHA_INICIO, java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date()))
+                }
+                val res = db.insert(TABLE_PRESTAMOS, null, prestamoValues)
+                if (res != -1L) {
+                    db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK - 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro))
+                    db.setTransactionSuccessful()
+                    return true
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            db.endTransaction()
+        }
+        return false
     }
 }

@@ -39,7 +39,18 @@ class CatalogFragment : Fragment() {
         dbHandler.insertMockLibrosIfEmpty()
         allBooks = dbHandler.getLibros()
         
-        adapter = BookAdapter(allBooks)
+        adapter = BookAdapter(allBooks) { libro ->
+            val bundle = Bundle().apply {
+                putSerializable("libro", libro)
+            }
+            val detailFragment = BookDetailFragment().apply {
+                arguments = bundle
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, detailFragment)
+                .addToBackStack(null)
+                .commit()
+        }
         binding.recyclerBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerBooks.adapter = adapter
         

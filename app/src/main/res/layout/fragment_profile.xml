@@ -170,8 +170,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical"
-                                android:background="@drawable/bg_circle_icon"
-                                android:backgroundTint="#EFF6FF"
+                                android:background="@drawable/bg_rounded_rect"
+                                android:backgroundTint="@color/bgLightGray"
                                 android:padding="16dp"
                                 android:layout_marginEnd="8dp">
 
@@ -197,8 +197,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical"
-                                android:background="@drawable/bg_circle_icon"
-                                android:backgroundTint="#FAF5FF"
+                                android:background="@drawable/bg_rounded_rect"
+                                android:backgroundTint="@color/bgLightGray"
                                 android:padding="16dp"
                                 android:layout_marginStart="8dp">
 
@@ -206,7 +206,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Reservas activas"
-                                    android:textColor="@color/colorSecondary"
+                                    android:textColor="@color/colorPrimary"
                                     android:textSize="12sp" />
                                 <TextView
                                     android:layout_width="wrap_content"

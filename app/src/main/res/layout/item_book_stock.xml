@@ -68,10 +68,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ficción"
-            android:textColor="#7E22CE"
+            android:textColor="@color/colorSecondary"
             android:textSize="12sp"
             android:background="@drawable/bg_circle_icon"
-            android:backgroundTint="#F3E8FF"
+            android:backgroundTint="@color/bgLightGray"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:layout_marginTop="8dp"
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_circle_icon"
+            android:background="@drawable/bg_rounded_rect"
             android:backgroundTint="#F9FAFB"
             android:padding="12dp"
             android:layout_marginTop="16dp"
@@ -102,8 +102,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_circle_icon"
-                android:backgroundTint="#FEE2E2"
-                android:src="@drawable/ic_minus_red"
+                android:backgroundTint="@color/bgLightGray"
+                android:src="@drawable/ic_minus_secondary"
                 android:padding="8dp" />
 
             <TextView
@@ -122,8 +122,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_circle_icon"
-                android:backgroundTint="#DCFCE7"
-                android:src="@drawable/ic_plus_green"
+                android:backgroundTint="@color/bgLightGray"
+                android:src="@drawable/ic_plus_secondary"
                 android:padding="8dp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

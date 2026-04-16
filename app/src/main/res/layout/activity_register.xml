@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C27B0">
+    android:background="@drawable/bg_header_gradient">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_marginBottom="16dp"
-                        android:background="@drawable/bg_circle_icon_register"
+                        android:background="@drawable/bg_circle_icon"
                         android:padding="16dp"
                         android:src="@drawable/ic_book" />
 
@@ -223,7 +223,7 @@
                         android:paddingBottom="12dp"
                         android:text="@string/registrarse"
                         android:textColor="@android:color/white"
-                        app:backgroundTint="#9333EA"
+                        app:backgroundTint="@color/colorPrimary"
                         app:cornerRadius="12dp" />
 
                     <TextView
@@ -231,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/ya_tienes_cuenta_inicia_sesion"
-                        android:textColor="#9333EA"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="14sp" />
 
                 </LinearLayout>

@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fcc.biblioteca.databinding.ItemBookCatalogBinding
 import com.fcc.biblioteca.model.Libro
 
-class BookAdapter(private var libros: List<Libro>) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookAdapter(
+    private var libros: List<Libro>,
+    private val onItemClick: (Libro) -> Unit
+) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
     fun updateList(newList: List<Libro>) {
         libros = newList
@@ -26,6 +29,8 @@ class BookAdapter(private var libros: List<Libro>) : RecyclerView.Adapter<BookAd
                 binding.tvStockStatus.text = "No disponible"
                 binding.tvStockStatus.setTextColor(android.graphics.Color.parseColor("#EA580C")) // Orange
             }
+            
+            binding.btnDetails.setOnClickListener { onItemClick(libro) }
         }
     }
 
