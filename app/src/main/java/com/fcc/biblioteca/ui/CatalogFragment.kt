@@ -23,6 +23,7 @@ class CatalogFragment : Fragment() {
     private lateinit var adapter: BookAdapter
     private var allBooks: List<Libro> = emptyList()
     private var categoryFilter = "Todos"
+    private var sortType = "A-Z"
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,49 +55,71 @@ class CatalogFragment : Fragment() {
         binding.recyclerBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerBooks.adapter = adapter
         
-        setupDynamicChips()
+        binding.btnFilterCategory.setOnClickListener { showCategoryMenu() }
+        binding.btnSort.setOnClickListener { showSortMenu() }
         
         binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) { filterList() }
+            override fun afterTextChanged(s: Editable?) { filterAndSortList() }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+        
+        filterAndSortList()
     }
     
-    private fun setupDynamicChips() {
-        binding.chipGroupCategories.removeAllViews()
+    private fun showCategoryMenu() {
+        val popup = androidx.appcompat.widget.PopupMenu(requireContext(), binding.btnFilterCategory)
         val categories = mutableListOf("Todos")
         categories.addAll(dbHandler.getUniqueCategories())
         
-        for (category in categories) {
-            val chip = layoutInflater.inflate(R.layout.item_chip_category, binding.chipGroupCategories, false) as Chip
-            chip.id = View.generateViewId()
-            chip.text = category
-            chip.isChecked = category == "Todos"
-            binding.chipGroupCategories.addView(chip)
+        categories.forEachIndexed { index, category ->
+            popup.menu.add(0, index, index, category)
         }
-
-        binding.chipGroupCategories.setOnCheckedStateChangeListener { group, checkedIds ->
-            if (checkedIds.isNotEmpty()) {
-                val chip = group.findViewById<Chip>(checkedIds.first())
-                val text = chip?.text?.toString()
-                if (text != null) {
-                    categoryFilter = text
-                    filterList()
-                }
-            }
+        
+        popup.setOnMenuItemClickListener { item ->
+            categoryFilter = categories[item.itemId]
+            binding.btnFilterCategory.text = "Categoría: $categoryFilter"
+            filterAndSortList()
+            true
         }
+        popup.show()
     }
     
-    private fun filterList() {
+    private fun showSortMenu() {
+        val popup = androidx.appcompat.widget.PopupMenu(requireContext(), binding.btnSort)
+        popup.menu.add(0, 0, 0, "Título (A-Z)")
+        popup.menu.add(0, 1, 1, "Título (Z-A)")
+        popup.menu.add(0, 2, 2, "Autor")
+        
+        popup.setOnMenuItemClickListener { item ->
+            sortType = when (item.itemId) {
+                0 -> "A-Z"
+                1 -> "Z-A"
+                2 -> "Autor"
+                else -> "A-Z"
+            }
+            filterAndSortList()
+            true
+        }
+        popup.show()
+    }
+    
+    private fun filterAndSortList() {
         val query = binding.etSearch.text.toString().trim().lowercase()
         
-        val filtered = allBooks.filter {
+        var filtered = allBooks.filter {
             val matchesSearch = it.titulo.lowercase().contains(query) || 
                                (it.autor?.lowercase()?.contains(query) ?: false)
             val matchesCategory = categoryFilter == "Todos" || 
                                  it.categoria.equals(categoryFilter, ignoreCase = true)
             matchesSearch && matchesCategory
+        }
+        
+        filtered = when (sortType) {
+            "A-Z" -> filtered.sortedBy { it.titulo }
+            "Z-A" -> filtered.sortedByDescending { it.titulo }
+            "Autor" -> filtered.sortedBy { it.autor ?: "" }
+            else -> filtered
         }
         
         adapter.updateList(filtered)

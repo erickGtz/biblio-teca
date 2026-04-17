@@ -33,4 +33,5 @@
     <color name="badgeBg">#DBEAFE</color>
     <color name="badgeText">#1D4ED8</color>
     <color name="iconTint">#4F46E5</color>
+    <color name="borderLight">#E5E7EB</color>
 </resources>

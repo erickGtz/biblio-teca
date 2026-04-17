@@ -18,6 +18,7 @@ class StockFragment : Fragment() {
     
     private lateinit var dbHandler: MyDBHandler
     private lateinit var adapter: StockAdapter
+    private var editingLibroId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +40,13 @@ class StockFragment : Fragment() {
         binding.etCategory.setAdapter(catAdapter)
         
         binding.btnAddNew.setOnClickListener {
+            resetForm()
             binding.containerAddForm.visibility = if (binding.containerAddForm.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
         
         binding.btnCloseForm.setOnClickListener {
             binding.containerAddForm.visibility = View.GONE
+            resetForm()
         }
         
         binding.btnSaveBook.setOnClickListener {
@@ -51,31 +54,44 @@ class StockFragment : Fragment() {
             val author = binding.etAuthor.text.toString().trim()
             val isbn = binding.etIsbn.text.toString().trim()
             val category = binding.etCategory.text.toString().trim()
+            val sinopsis = binding.etSinopsis.text.toString().trim()
             val stockStr = binding.etStock.text.toString().trim()
             val stock = if (stockStr.isNotEmpty()) stockStr.toInt() else 0
             
-            if (title.isNotEmpty() && isbn.isNotEmpty()) {
-                val success = dbHandler.addLibro(title, author, isbn, category, stock)
-                if (success) {
-                    binding.etTitle.text?.clear()
-                    binding.etAuthor.text?.clear()
-                    binding.etIsbn.text?.clear()
-                    binding.etCategory.text.clear()
-                    binding.etStock.text?.clear()
-                    binding.containerAddForm.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Libro agregado", Toast.LENGTH_SHORT).show()
-                    loadBooks()
-                } else {
-                    Toast.makeText(requireContext(), "Error al agregar (ISBN duplicado)", Toast.LENGTH_SHORT).show()
-                }
+            // Validaciones Robustas
+            if (title.isEmpty()) {
+                binding.etTitle.error = "Ingresa un título"
+                return@setOnClickListener
+            }
+            if (isbn.isEmpty() || (isbn.length != 10 && isbn.length != 13 && isbn.length != 3)) { // 3 for mock compatibility
+                binding.etIsbn.error = "ISBN inválido (3, 10 o 13 dígitos)"
+                return@setOnClickListener
+            }
+            if (stock < 0) {
+                binding.etStock.error = "El stock no puede ser negativo"
+                return@setOnClickListener
+            }
+
+            val success = if (editingLibroId == null) {
+                dbHandler.addLibro(title, author, isbn, category, stock, sinopsis)
             } else {
-                Toast.makeText(requireContext(), "Título e ISBN obligatorios", Toast.LENGTH_SHORT).show()
+                dbHandler.updateLibro(editingLibroId!!, title, author, isbn, category, stock, sinopsis)
+            }
+
+            if (success) {
+                resetForm()
+                binding.containerAddForm.visibility = View.GONE
+                val msg = if (editingLibroId == null) "Libro agregado" else "Libro actualizado"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                loadBooks()
+            } else {
+                Toast.makeText(requireContext(), "Error al guardar (ISBN duplicado)", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun setupRecyclerView() {
-        adapter = StockAdapter(emptyList(), this::onUpdateStock, this::onDeleteBook)
+        adapter = StockAdapter(emptyList(), this::onUpdateStock, this::onDeleteBook, this::onEditBook)
         binding.recyclerStock.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerStock.adapter = adapter
         loadBooks()
@@ -94,6 +110,39 @@ class StockFragment : Fragment() {
     private fun onDeleteBook(id: Int) {
         dbHandler.deleteLibro(id)
         loadBooks()
+    }
+
+    private fun onEditBook(libro: Libro) {
+        editingLibroId = libro.id_libro
+        binding.tvFormTitle.text = "Editar Libro"
+        binding.btnSaveBook.text = "Actualizar Libro"
+        
+        binding.etTitle.setText(libro.titulo)
+        binding.etAuthor.setText(libro.autor)
+        binding.etIsbn.setText(libro.isbn)
+        binding.etCategory.setText(libro.categoria, false)
+        binding.etSinopsis.setText(libro.sinopsis)
+        binding.etStock.setText(libro.stock.toString())
+        
+        binding.containerAddForm.visibility = View.VISIBLE
+        binding.etTitle.requestFocus()
+    }
+
+    private fun resetForm() {
+        editingLibroId = null
+        binding.tvFormTitle.text = "Nuevo Libro"
+        binding.btnSaveBook.text = "Guardar Libro"
+        
+        binding.etTitle.text?.clear()
+        binding.etAuthor.text?.clear()
+        binding.etIsbn.text?.clear()
+        binding.etCategory.text.clear()
+        binding.etSinopsis.text?.clear()
+        binding.etStock.text?.clear()
+        
+        binding.etTitle.error = null
+        binding.etIsbn.error = null
+        binding.etStock.error = null
     }
 
     override fun onDestroyView() {

@@ -8,10 +8,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerContainer"
-        android:layout_width="412dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_header_gradient"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="24dp"
         android:paddingTop="24dp"
         android:paddingBottom="24dp"
         app:layout_constraintEnd_toEndOf="parent"

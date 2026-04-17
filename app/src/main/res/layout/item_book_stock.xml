@@ -28,11 +28,21 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
+            android:id="@+id/btnEdit"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_edit_outline"
+            android:padding="14dp"
+            app:tint="@color/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/btnDelete"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="-8dp"
-            android:layout_marginTop="-8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_trash"
             android:padding="12dp"

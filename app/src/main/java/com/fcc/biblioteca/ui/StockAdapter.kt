@@ -9,7 +9,8 @@ import com.fcc.biblioteca.model.Libro
 class StockAdapter(
     private var libros: List<Libro>,
     private val onUpdateStock: (Int, Int) -> Unit,
-    private val onDeleteBook: (Int) -> Unit
+    private val onDeleteBook: (Int) -> Unit,
+    private val onEditClick: (Libro) -> Unit
 ) : RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
 
     fun updateList(newList: List<Libro>) {
@@ -32,6 +33,9 @@ class StockAdapter(
                 if (libro.stock > 0) {
                     onUpdateStock(libro.id_libro, -1)
                 }
+            }
+            binding.btnEdit.setOnClickListener {
+                onEditClick(libro)
             }
             binding.btnDelete.setOnClickListener {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(binding.root.context)

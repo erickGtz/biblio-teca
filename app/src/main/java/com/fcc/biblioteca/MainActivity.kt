@@ -7,6 +7,7 @@ import com.fcc.biblioteca.databinding.ActivityMainBinding
 import com.fcc.biblioteca.ui.CatalogFragment
 import com.fcc.biblioteca.ui.StockFragment
 import com.fcc.biblioteca.ui.ProfileFragment
+import com.fcc.biblioteca.ui.MainPagerAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,41 +25,26 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigation.menu.removeItem(R.id.nav_stock)
         }
 
-        if (savedInstanceState == null) {
-            loadFragment(CatalogFragment())
-            binding.bottomNavigation.selectedItemId = R.id.nav_catalog
-        }
+        val adapter = MainPagerAdapter(this, role == "admin")
+        binding.viewPager.adapter = adapter
 
+        // Sync ViewPager swipe with BottomNavigation
+        binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val menuId = adapter.getMenuIdForPosition(position)
+                binding.bottomNavigation.selectedItemId = menuId
+            }
+        })
+
+        // Sync BottomNavigation clicks with ViewPager
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_catalog -> {
-                    loadFragment(CatalogFragment())
-                    true
-                }
-                R.id.nav_loans -> {
-                    loadFragment(com.fcc.biblioteca.ui.MyLoansFragment())
-                    true
-                }
-                R.id.nav_stock -> {
-                    if (role == "admin") {
-                        loadFragment(StockFragment())
-                        true
-                    } else {
-                        false
-                    }
-                }
-                R.id.nav_profile -> {
-                    loadFragment(ProfileFragment())
-                    true
-                }
-                else -> false
+            val position = adapter.getPositionForMenuId(item.itemId)
+            if (position != -1) {
+                binding.viewPager.currentItem = position
+                true
+            } else {
+                false
             }
         }
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .commit()
     }
 }

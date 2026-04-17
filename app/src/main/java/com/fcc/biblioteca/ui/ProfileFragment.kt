@@ -40,17 +40,34 @@ class ProfileFragment : Fragment() {
         val userId = prefs.getInt("userId", -1)
         if (userId != -1) {
             val dbHandler = com.fcc.biblioteca.db.MyDBHandler(requireContext())
-            val count = dbHandler.getContadorPrestamos(userId)
-            binding.tvBooksLoaned.text = count.toString()
-            binding.tvActiveReserves.text = count.toString()
+            
+            // Personal reserves count (for everyone)
+            val personalCount = dbHandler.getContadorPrestamos(userId)
+            binding.tvActiveReserves.text = personalCount.toString()
+            
+            // Global loan count (Admin only)
+            if (role == "admin") {
+                binding.containerBooksLoanedStat.visibility = View.VISIBLE
+                val globalCount = dbHandler.getTotalContadorPrestamos()
+                binding.tvBooksLoaned.text = globalCount.toString()
+            } else {
+                binding.containerBooksLoanedStat.visibility = View.GONE
+            }
         }
 
 
         binding.btnLogout.setOnClickListener {
-            prefs.edit().clear().apply()
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión y salir de la cuenta de biblioteca?")
+                .setPositiveButton("Salir") { _, _ ->
+                    prefs.edit().clear().apply()
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 
