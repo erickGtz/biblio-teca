@@ -27,12 +27,15 @@ class StockAdapter(
             binding.tvStockCount.text = libro.stock.toString()
 
             binding.btnPlus.setOnClickListener {
-                onUpdateStock(libro.id_libro, 1)
+                showStockConfirmationDialog(libro, 1)
             }
             binding.btnMinus.setOnClickListener {
                 if (libro.stock > 0) {
-                    onUpdateStock(libro.id_libro, -1)
+                    showStockConfirmationDialog(libro, -1)
                 }
+            }
+            binding.tvStockCount.setOnClickListener {
+                showManualStockDialog(libro)
             }
             binding.btnEdit.setOnClickListener {
                 onEditClick(libro)
@@ -45,6 +48,37 @@ class StockAdapter(
                     .setNegativeButton("Cancelar", null)
                     .show()
             }
+        }
+
+        private fun showStockConfirmationDialog(libro: Libro, change: Int) {
+            val action = if (change > 0) "aumentar" else "disminuir"
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(binding.root.context)
+                .setTitle("Confirmar Ajuste")
+                .setMessage("¿Deseas $action el stock de '${libro.titulo}'?")
+                .setPositiveButton("Confirmar") { _, _ -> onUpdateStock(libro.id_libro, change) }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }
+
+        private fun showManualStockDialog(libro: Libro) {
+            val input = android.widget.EditText(binding.root.context).apply {
+                inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                hint = "Nuevo stock"
+                setText(libro.stock.toString())
+            }
+
+            com.google.android.material.dialog.MaterialAlertDialogBuilder(binding.root.context)
+                .setTitle("Editar Stock Manual")
+                .setMessage("Ingresa la cantidad exacta para '${libro.titulo}':")
+                .setView(input)
+                .setPositiveButton("Guardar") { _, _ ->
+                    val newStock = input.text.toString().toIntOrNull()
+                    if (newStock != null && newStock >= 0) {
+                        onUpdateStock(libro.id_libro, newStock - libro.stock)
+                    }
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 

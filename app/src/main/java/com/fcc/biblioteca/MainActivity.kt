@@ -31,6 +31,11 @@ class MainActivity : AppCompatActivity() {
         // Sync ViewPager swipe with BottomNavigation
         binding.viewPager.registerOnPageChangeCallback(object : androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                // Cerrar detalle si está abierto al cambiar de pestaña por swipe
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+                
                 val menuId = adapter.getMenuIdForPosition(position)
                 binding.bottomNavigation.selectedItemId = menuId
             }
@@ -40,6 +45,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val position = adapter.getPositionForMenuId(item.itemId)
             if (position != -1) {
+                // Si hay un detalle abierto (en fragment_container), cerrarlo
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+                
                 binding.viewPager.currentItem = position
                 true
             } else {

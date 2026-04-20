@@ -41,6 +41,17 @@ class MyLoansFragment : Fragment() {
             // SIMULATING PDF OPENING
             Toast.makeText(requireContext(), "Abriendo PDF de '${prestamo.libro.titulo}'...", Toast.LENGTH_LONG).show()
         }, { prestamo ->
+            // VALIDACIÓN: No devolver el mismo día
+            val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+            if (prestamo.fechaInicio == today) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Devolución no permitida")
+                    .setMessage("Para asegurar un uso responsable, no se permiten devoluciones el mismo día del préstamo. Por favor, intenta de nuevo mañana.")
+                    .setPositiveButton("Entendido", null)
+                    .show()
+                return@MyLoansAdapter
+            }
+
             dbHandler.devolverLibro(prestamo.id_prestamo, prestamo.libro.id_libro)
             Toast.makeText(requireContext(), "Libro devuelto con éxito", Toast.LENGTH_SHORT).show()
             loans = dbHandler.getPrestamosPorUsuario(userId)
@@ -58,7 +69,20 @@ class MyLoansFragment : Fragment() {
         } else {
             binding.tvEmptyState.visibility = View.GONE
         }
-        
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Recargar datos cada vez que el fragmento es visible
+        val prefs = requireActivity().getSharedPreferences("BibliotecaPrefs", Context.MODE_PRIVATE)
+        val userId = prefs.getInt("userId", -1)
+        if (userId != -1 && ::dbHandler.isInitialized) {
+            val updatedLoans = dbHandler.getPrestamosPorUsuario(userId)
+            if (::adapter.isInitialized) {
+                adapter.updateList(updatedLoans)
+                binding.tvEmptyState.visibility = if (updatedLoans.isEmpty()) View.VISIBLE else View.GONE
+            }
+        }
     }
 
     override fun onDestroyView() {
