@@ -14,8 +14,9 @@ class MyDBHandler(
 ) : SQLiteOpenHelper(context, name, factory, version) {
 
     companion object {
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 8
         private const val DATABASE_NAME = "biblioteca_personal.db"
+        const val MAX_LOANS = 3
 
         // TABLE LIBROS
         const val TABLE_LIBROS = "libros"
@@ -50,7 +51,7 @@ class MyDBHandler(
         const val COLUMN_CRED_ID = "id_credencial"
         const val COLUMN_CRED_ID_USUARIO = "id_usuario"
         const val COLUMN_CRED_CORREO = "correo"
-        const val COLUMN_CRED_USUARIO = "usuario"
+        const val COLUMN_CRED_TELEFONO = "telefono"
         const val COLUMN_CRED_CONTRASENA = "contrasena"
 
         private val coverList = listOf("cover_cien_anos", "cover_quijote", "cover_principito", "cover_sapiens", "cover_davinci", "cover_1984")
@@ -96,7 +97,7 @@ class MyDBHandler(
                 + COLUMN_CRED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_CRED_ID_USUARIO + " INTEGER NOT NULL,"
                 + COLUMN_CRED_CORREO + " TEXT NOT NULL UNIQUE,"
-                + COLUMN_CRED_USUARIO + " TEXT NOT NULL UNIQUE,"
+                + COLUMN_CRED_TELEFONO + " TEXT NOT NULL UNIQUE,"
                 + COLUMN_CRED_CONTRASENA + " TEXT NOT NULL,"
                 + "FOREIGN KEY(" + COLUMN_CRED_ID_USUARIO + ") REFERENCES " + TABLE_USUARIOS + "(" + COLUMN_USUARIO_ID + ") ON DELETE CASCADE)")
 
@@ -116,7 +117,7 @@ class MyDBHandler(
 
         // Crear Admin default
         db.execSQL("INSERT INTO $TABLE_USUARIOS ($COLUMN_USUARIO_NOMBRE, $COLUMN_USUARIO_APELLIDO1, $COLUMN_USUARIO_APELLIDO2, $COLUMN_USUARIO_ROL) VALUES ('Admin', 'Root', '', 'admin')")
-        db.execSQL("INSERT INTO $TABLE_CREDENCIALES ($COLUMN_CRED_ID_USUARIO, $COLUMN_CRED_CORREO, $COLUMN_CRED_USUARIO, $COLUMN_CRED_CONTRASENA) VALUES (1, 'admin@admin.com', 'admin', 'admin123')")
+        db.execSQL("INSERT INTO $TABLE_CREDENCIALES ($COLUMN_CRED_ID_USUARIO, $COLUMN_CRED_CORREO, $COLUMN_CRED_TELEFONO, $COLUMN_CRED_CONTRASENA) VALUES (1, 'admin@admin.com', '1234567890', 'admin123')")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -127,7 +128,7 @@ class MyDBHandler(
         onCreate(db)
     }
 
-    fun registerUsuario(nombre: String, ap1: String, ap2: String, correo: String, usuario: String, pass: String): Boolean {
+    fun registerUsuario(nombre: String, ap1: String, ap2: String, correo: String, telefono: String, pass: String): Boolean {
         val db = this.writableDatabase
         db.beginTransaction()
         try {
@@ -142,7 +143,7 @@ class MyDBHandler(
                 val credValues = ContentValues().apply {
                     put(COLUMN_CRED_ID_USUARIO, userId)
                     put(COLUMN_CRED_CORREO, correo)
-                    put(COLUMN_CRED_USUARIO, usuario)
+                    put(COLUMN_CRED_TELEFONO, telefono)
                     put(COLUMN_CRED_CONTRASENA, pass)
                 }
                 val credId = db.insert(TABLE_CREDENCIALES, null, credValues)
@@ -162,10 +163,10 @@ class MyDBHandler(
     fun loginUsuario(credencial: String, contrasena: String): com.fcc.biblioteca.model.Usuario? {
         val db = this.readableDatabase
         val query = """
-            SELECT u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, u.$COLUMN_USUARIO_ROL 
+            SELECT u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, u.$COLUMN_USUARIO_ROL, c.$COLUMN_CRED_CORREO, c.$COLUMN_CRED_TELEFONO
             FROM $TABLE_CREDENCIALES c 
             INNER JOIN $TABLE_USUARIOS u ON c.$COLUMN_CRED_ID_USUARIO = u.$COLUMN_USUARIO_ID 
-            WHERE (c.$COLUMN_CRED_CORREO = ? OR c.$COLUMN_CRED_USUARIO = ?) AND c.$COLUMN_CRED_CONTRASENA = ?
+            WHERE (c.$COLUMN_CRED_CORREO = ? OR c.$COLUMN_CRED_TELEFONO = ?) AND c.$COLUMN_CRED_CONTRASENA = ?
         """
         val cursor = db.rawQuery(query, arrayOf(credencial, credencial, contrasena))
         var usuario: com.fcc.biblioteca.model.Usuario? = null
@@ -175,7 +176,9 @@ class MyDBHandler(
                 nombre = cursor.getString(1),
                 apellido1 = cursor.getString(2),
                 apellido2 = cursor.getString(3),
-                rol = cursor.getString(4)
+                rol = cursor.getString(4),
+                correo = cursor.getString(5),
+                telefono = cursor.getString(6)
             )
         }
         cursor.close()
@@ -309,6 +312,13 @@ class MyDBHandler(
         val db = this.writableDatabase
         db.beginTransaction()
         try {
+            // 1. Verificar si ya alcanzó el límite máximo
+            val userLoanCount = getContadorPrestamos(idUsuario)
+            if (userLoanCount >= MAX_LOANS) {
+                return 2 // Límite alcanzado
+            }
+
+            // 2. Verificar si ya tiene ESTE libro
             val countCursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_PRESTAMOS WHERE $COLUMN_PRESTAMO_ID_USUARIO = ? AND $COLUMN_PRESTAMO_ID_LIBRO = ?", arrayOf(idUsuario.toString(), idLibro.toString()))
             var alreadyBorrowed = false
             if (countCursor.moveToFirst()) {
@@ -317,9 +327,10 @@ class MyDBHandler(
             countCursor.close()
             
             if (alreadyBorrowed) {
-                return 0
+                return 0 // Ya lo tiene
             }
 
+            // 3. Verificar stock
             val cursor = db.rawQuery("SELECT $COLUMN_LIBRO_STOCK FROM $TABLE_LIBROS WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro.toString()))
             var stock = 0
             if (cursor.moveToFirst()) {
@@ -342,17 +353,20 @@ class MyDBHandler(
                 }
                 val res = db.insert(TABLE_PRESTAMOS, null, prestamoValues)
                 if (res != -1L) {
-                    db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK - 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro))
+                    // Actualizar stock de forma robusta
+                    db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK - 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro.toString()))
                     db.setTransactionSuccessful()
-                    return 1
+                    return 1 // Éxito
                 }
+            } else {
+                return -2 // Sin stock (opcional diferenciar de error genérico)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             db.endTransaction()
         }
-        return -1
+        return -1 // Error genérico
     }
 
     fun getPrestamosPorUsuario(idUsuario: Int): List<com.fcc.biblioteca.model.Prestamo> {
@@ -438,7 +452,7 @@ class MyDBHandler(
         val db = this.writableDatabase
         db.beginTransaction()
         try {
-            db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK + 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro))
+            db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = $COLUMN_LIBRO_STOCK + 1 WHERE $COLUMN_LIBRO_ID = ?", arrayOf(idLibro.toString()))
             db.delete(TABLE_PRESTAMOS, "$COLUMN_PRESTAMO_ID = ?", arrayOf(idPrestamo.toString()))
             db.setTransactionSuccessful()
         } catch (e: Exception) {
@@ -446,5 +460,48 @@ class MyDBHandler(
         } finally {
             db.endTransaction()
         }
+    }
+
+    fun getPrestamosPorExpirar(idUsuario: Int): List<com.fcc.biblioteca.model.Prestamo> {
+        val list = mutableListOf<com.fcc.biblioteca.model.Prestamo>()
+        val db = this.readableDatabase
+        
+        // Obtenemos fecha de hoy + 3 días para el rango de expiración
+        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        val cal = java.util.Calendar.getInstance()
+        val today = sdf.format(cal.time)
+        cal.add(java.util.Calendar.DAY_OF_YEAR, 3)
+        val inThreeDays = sdf.format(cal.time)
+
+        val query = """
+            SELECT p.$COLUMN_PRESTAMO_ID, p.$COLUMN_PRESTAMO_FECHA_INICIO, p.$COLUMN_PRESTAMO_FECHA_FIN, 
+                   l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_IMAGEN
+            FROM $TABLE_PRESTAMOS p
+            INNER JOIN $TABLE_LIBROS l ON p.$COLUMN_PRESTAMO_ID_LIBRO = l.$COLUMN_LIBRO_ID
+            WHERE p.$COLUMN_PRESTAMO_ID_USUARIO = ? AND p.$COLUMN_PRESTAMO_FECHA_FIN BETWEEN ? AND ?
+        """
+        
+        val cursor = db.rawQuery(query, arrayOf(idUsuario.toString(), today, inThreeDays))
+        if (cursor.moveToFirst()) {
+            do {
+                val libro = com.fcc.biblioteca.model.Libro(
+                    id_libro = cursor.getInt(3),
+                    titulo = cursor.getString(4),
+                    categoria = cursor.getString(5),
+                    autor = cursor.getString(6),
+                    imagen = cursor.getString(7) // Usando parámetro nombrado para asegurar que no se asigne a isbn por error posicional
+                )
+                list.add(
+                    com.fcc.biblioteca.model.Prestamo(
+                        id_prestamo = cursor.getInt(0),
+                        libro = libro,
+                        fechaInicio = cursor.getString(1),
+                        fechaFin = cursor.getString(2) ?: ""
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
     }
 }

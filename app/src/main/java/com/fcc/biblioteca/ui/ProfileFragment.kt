@@ -45,6 +45,24 @@ class ProfileFragment : Fragment() {
             val personalCount = dbHandler.getContadorPrestamos(userId)
             binding.tvActiveReserves.text = personalCount.toString()
             
+            // Notification / Expiration Alerts
+            val expiring = dbHandler.getPrestamosPorExpirar(userId)
+            if (expiring.isNotEmpty()) {
+                binding.cardNotifications.visibility = View.VISIBLE
+                binding.containerAlerts.removeAllViews()
+                expiring.forEach { p ->
+                    val textView = android.widget.TextView(requireContext()).apply {
+                        text = "• Tu préstamo de '${p.libro.titulo}' expira el ${p.fechaFin}. Prográmate para devolverlo."
+                        setTextColor(android.graphics.Color.DKGRAY)
+                        setPadding(0, 0, 0, 12)
+                        textSize = 14f
+                    }
+                    binding.containerAlerts.addView(textView)
+                }
+            } else {
+                binding.cardNotifications.visibility = View.GONE
+            }
+
             // Global loan count (Admin only)
             if (role == "admin") {
                 binding.containerBooksLoanedStat.visibility = View.VISIBLE

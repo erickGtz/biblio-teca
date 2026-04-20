@@ -23,12 +23,12 @@ class RegisterActivity : AppCompatActivity() {
             val nombre = binding.etName.text.toString().trim()
             val ap1 = binding.etApellidoPaterno.text.toString().trim()
             val ap2 = binding.etApellidoMaterno.text.toString().trim()
-            val user = binding.etUsername.text.toString().trim()
+            val phone = binding.etPhone.text.toString().trim()
             val email = binding.etEmailRegister.text.toString().trim()
             val pass = binding.etPasswordRegister.text.toString()
             val confPass = binding.etConfirmPasswordRegister.text.toString()
             
-            if (nombre.isEmpty() || ap1.isEmpty() || user.isEmpty() || email.isEmpty() || pass.isEmpty()) {
+            if (nombre.isEmpty() || ap1.isEmpty() || phone.isEmpty() || email.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Por favor llena todos los campos requeridos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -38,12 +38,12 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             
-            val exito = dbHandler.registerUsuario(nombre, ap1, ap2, email, user, pass)
+            val exito = dbHandler.registerUsuario(nombre, ap1, ap2, email, phone, pass)
             if (exito) {
                 Toast.makeText(this, "Usuario registrado", Toast.LENGTH_SHORT).show()
                 
-                // Fetch the user to save session and ID properly. For now we know it's "usuario" role.
-                val loggedUser = dbHandler.loginUsuario(user, pass)
+                // Fetch the user to save session and ID properly.
+                val loggedUser = dbHandler.loginUsuario(email, pass)
                 if (loggedUser != null) {
                     val prefs = getSharedPreferences("BibliotecaPrefs", MODE_PRIVATE)
                     prefs.edit().apply {
@@ -58,7 +58,7 @@ class RegisterActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(this, "Error al registrar el usuario, es posible que el correo o usuario ya exista", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Error al registrar: el correo o teléfono ya están en uso", Toast.LENGTH_LONG).show()
             }
         }
         

@@ -81,9 +81,15 @@ class BookDetailFragment : Fragment() {
                                 binding.btnReserveBook.text = "Sin stock"
                             }
                         } else if (status == 0) {
-                            Toast.makeText(requireContext(), "Límite: Ya tienes un ejemplar de este libro reservado", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "Ya tienes un ejemplar de este libro", Toast.LENGTH_LONG).show()
+                        } else if (status == 2) {
+                            com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Límite Alcanzado")
+                                .setMessage("Has alcanzado el límite máximo de ${MyDBHandler.MAX_LOANS} préstamos activos. Por favor, devuelve un libro antes de solicitar otro.")
+                                .setPositiveButton("Entendido", null)
+                                .show()
                         } else {
-                            Toast.makeText(requireContext(), "Error al registrar el préstamo", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Error: No hay stock o error de sistema", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(requireContext(), "Error de sesión", Toast.LENGTH_SHORT).show()
