@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorSecondary">#009688</color>
+    <color name="colorBackground">#121212</color>
+    
+    <!-- Text Colors -->
+    <color name="colorTextPrimary">#E5E7EB</color>
+    <color name="colorTextSecondary">#9CA3AF</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    
+    <!-- Dark Mode Semantics -->
+    <color name="pageBg">#121212</color>
+    <color name="cardBg">#1E1E1E</color>
+    <color name="textPrimary">#E5E7EB</color>
+    <color name="textSecondary">#9CA3AF</color>
+    <color name="textTertiary">#6B7280</color>
+    <color name="badgeBg">#1E3A8A</color>
+    <color name="badgeText">#BFDBFE</color>
+    <color name="bgLightGray">#1F2937</color>
+    <color name="iconTint">#818CF8</color>
+</resources>

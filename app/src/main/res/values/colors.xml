@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorSecondary">#009688</color>
+    <color name="colorBackground">#F8F9FA</color>
+    
+    <!-- Text Colors -->
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    
+    <!-- Semantic Colors -->
+    <color name="colorError">#D32F2F</color>
+    <color name="colorSuccess">#388E3C</color>
+    <color name="colorWarning">#F57C00</color>
+    
+    <!-- Utilities -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="cardBackground">#FFFFFF</color>
+    
+    <color name="bgLightGray">#F5F5F5</color>
+    
+    <!-- Day Mode Semantics matching layouts -->
+    <color name="pageBg">#F9FAFB</color>
+    <color name="cardBg">#FFFFFF</color>
+    <color name="textPrimary">#111827</color>
+    <color name="textSecondary">#4B5563</color>
+    <color name="textTertiary">#6B7280</color>
+    <color name="badgeBg">#DBEAFE</color>
+    <color name="badgeText">#1D4ED8</color>
+    <color name="iconTint">#4F46E5</color>
+    <color name="borderLight">#E5E7EB</color>
 </resources>

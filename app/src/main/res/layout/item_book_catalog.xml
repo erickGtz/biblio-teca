@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/cardBg">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <FrameLayout
+            android:id="@+id/coverContainer"
+            android:layout_width="80dp"
+            android:layout_height="112dp"
+            android:background="@drawable/bg_book_cover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            
+            <ImageView
+                android:id="@+id/ivCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_book_cover"
+                android:scaleType="centerCrop" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvBookTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cien años de soledad"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/coverContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvBookAuthor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Gabriel García Márquez"
+            android:textColor="@color/textSecondary"
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBookTitle" />
+
+        <TextView
+            android:id="@+id/tvCategoryBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_circle_icon"
+            android:backgroundTint="@color/badgeBg"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="Ficción"
+            android:textColor="@color/badgeText"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvStockStatus"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvBookAuthor" />
+
+        <TextView
+            android:id="@+id/tvStockStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12 disponibles"
+            android:textColor="@color/colorSuccess"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvBookTitle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detalles"
+            app:icon="@drawable/ic_search_details"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="0dp"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="16dp"
+            app:cornerRadius="16dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">biblioteca</string>
+    <string name="biblioteca_digital">Biblio-Teca</string>
+    <string name="inicia_sesion_continuar">Inicia sesión para continuar</string>
+    <string name="email">Email</string>
+    <string name="email_o_telefono">Email o Teléfono</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="no_tienes_cuenta_registrate">¿No tienes cuenta? Regístrate</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="registrate_comenzar">Regístrate para comenzar</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido_paterno">Apellido paterno</string>
+    <string name="apellido_materno">Apellido materno</string>
+    <string name="usuario">Usuario</string>
+    <string name="confirmar_contrasena">Confirmar contraseña</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="ya_tienes_cuenta_inicia_sesion">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="telefono">Teléfono</string>
 </resources>
