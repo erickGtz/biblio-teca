@@ -177,8 +177,6 @@ class MyDBHandler(
                 apellido1 = cursor.getString(2),
                 apellido2 = cursor.getString(3),
                 rol = cursor.getString(4),
-                correo = cursor.getString(5),
-                telefono = cursor.getString(6)
             )
         }
         cursor.close()
@@ -558,7 +556,6 @@ class MyDBHandler(
         cursor.close()
         return list
     }
-
     fun insertPrestamoDePrueba(idUsuario: Int) {
         val db = this.writableDatabase
         val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
