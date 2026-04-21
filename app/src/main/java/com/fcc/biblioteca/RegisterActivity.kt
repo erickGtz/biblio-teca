@@ -50,6 +50,7 @@ class RegisterActivity : AppCompatActivity() {
                         putInt("userId", loggedUser.id_usuario)
                         putString("userName", loggedUser.nombre)
                         putString("userRole", loggedUser.rol)
+                        putString("userPhone", loggedUser.telefono)
                         apply()
                     }
                 }

@@ -36,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
                     putInt("userId", usuario.id_usuario)
                     putString("userName", usuario.nombre)
                     putString("userRole", usuario.rol)
+                    putString("userPhone", usuario.telefono)
                     apply()
                 }
                 val intent = Intent(this, MainActivity::class.java)

@@ -185,6 +185,31 @@ class MyDBHandler(
         return usuario
     }
 
+    fun getUsuario(userId: Int): com.fcc.biblioteca.model.Usuario? {
+        val db = this.readableDatabase
+        val query = """
+            SELECT u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, u.$COLUMN_USUARIO_ROL, c.$COLUMN_CRED_CORREO, c.$COLUMN_CRED_TELEFONO
+            FROM $TABLE_USUARIOS u
+            LEFT JOIN $TABLE_CREDENCIALES c ON u.$COLUMN_USUARIO_ID = c.$COLUMN_CRED_ID_USUARIO
+            WHERE u.$COLUMN_USUARIO_ID = ?
+        """
+        val cursor = db.rawQuery(query, arrayOf(userId.toString()))
+        var usuario: com.fcc.biblioteca.model.Usuario? = null
+        if (cursor.moveToFirst()) {
+            usuario = com.fcc.biblioteca.model.Usuario(
+                id_usuario = cursor.getInt(0),
+                nombre = cursor.getString(1),
+                apellido1 = cursor.getString(2),
+                apellido2 = cursor.getString(3),
+                rol = cursor.getString(4),
+                correo = cursor.getString(5) ?: "",
+                telefono = cursor.getString(6) ?: ""
+            )
+        }
+        cursor.close()
+        return usuario
+    }
+
     fun getLibros(): List<Libro> {
         val list = mutableListOf<Libro>()
         val db = this.readableDatabase
@@ -425,6 +450,35 @@ class MyDBHandler(
         return count
     }
 
+    fun getTotalUsuarios(): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_USUARIOS", null)
+        var count = 0
+        if (cursor.moveToFirst()) count = cursor.getInt(0)
+        cursor.close()
+        return count
+    }
+
+    fun getTotalLibros(): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_LIBROS", null)
+        var count = 0
+        if (cursor.moveToFirst()) count = cursor.getInt(0)
+        cursor.close()
+        return count
+    }
+
+    fun getTotalStock(): Int {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT SUM($COLUMN_LIBRO_STOCK) FROM $TABLE_LIBROS", null)
+        var count = 0
+        if (cursor.moveToFirst()) count = cursor.getInt(0)
+        cursor.close()
+        return count
+    }
+
+
+
     fun procesarDevolucionesExpiradas() {
         val db = this.writableDatabase
         val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
@@ -503,5 +557,31 @@ class MyDBHandler(
         }
         cursor.close()
         return list
+    }
+
+    fun insertPrestamoDePrueba(idUsuario: Int) {
+        val db = this.writableDatabase
+        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        val cal = java.util.Calendar.getInstance()
+        
+        // Inicio hace una semana
+        cal.add(java.util.Calendar.DAY_OF_YEAR, -7)
+        val fechaInicio = sdf.format(cal.time)
+        
+        // Fin mañana
+        cal.add(java.util.Calendar.DAY_OF_YEAR, 8) // -7 + 8 = +1
+        val fechaFin = sdf.format(cal.time)
+        
+        // Buscamos el primer libro que exista
+        val cursor = db.rawQuery("SELECT $COLUMN_LIBRO_ID FROM $TABLE_LIBROS LIMIT 1", null)
+        if (cursor.moveToFirst()) {
+            val idLibro = cursor.getInt(0)
+            db.execSQL("INSERT INTO $TABLE_PRESTAMOS ($COLUMN_PRESTAMO_ID_USUARIO, $COLUMN_PRESTAMO_ID_LIBRO, $COLUMN_PRESTAMO_FECHA_INICIO, $COLUMN_PRESTAMO_FECHA_FIN) VALUES (?, ?, ?, ?)",
+                arrayOf(idUsuario, idLibro, fechaInicio, fechaFin))
+            android.util.Log.d("MyDBHandler", "PRÉSTAMO SIMULADO: Usuario $idUsuario, Libro $idLibro, expira $fechaFin")
+        } else {
+            android.util.Log.e("MyDBHandler", "ERROR SIMULACIÓN: No hay libros en la base de datos")
+        }
+        cursor.close()
     }
 }

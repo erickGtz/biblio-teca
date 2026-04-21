@@ -24,7 +24,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintEnd_toStartOf="@id/btnEdit"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -46,6 +46,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_trash"
             android:padding="12dp"
+            app:tint="@color/colorError"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

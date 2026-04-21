@@ -30,7 +30,13 @@ class BookDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         dbHandler = MyDBHandler(requireContext())
-        libro = arguments?.getSerializable("libro") as? Libro
+        
+        libro = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable("libro", Libro::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            arguments?.getSerializable("libro") as? Libro
+        }
         
         libro?.let {
             binding.tvDetailTitle.text = it.titulo
@@ -74,6 +80,13 @@ class BookDetailFragment : Fragment() {
                         val status = dbHandler.prestarLibro(userId, libro!!.id_libro)
                         if (status == 1) {
                             Toast.makeText(requireContext(), "Préstamo registrado exitosamente", Toast.LENGTH_SHORT).show()
+                            
+                            // Mandar SMS de confirmación
+                            val userPhone = prefs.getString("userPhone", "") ?: ""
+                            if (userPhone.isNotEmpty()) {
+                                com.fcc.biblioteca.SmsHelper.sendConfirmationSms(requireContext(), userPhone, libro!!.titulo)
+                            }
+
                             libro!!.stock -= 1
                             binding.tvDetailStock.text = "Stock disponible: ${libro!!.stock}"
                             if (libro!!.stock <= 0) {
