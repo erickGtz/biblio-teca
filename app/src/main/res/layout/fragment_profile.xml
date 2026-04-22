@@ -248,7 +248,8 @@
                                     android:layout_height="wrap_content"
                                     android:text="Libros prestados"
                                     android:textColor="@color/colorPrimary"
-                                    android:textSize="12sp" />
+                                    android:textSize="12sp"
+                                    android:minLines="2" />
 
                                 <TextView
                                     android:id="@+id/tvBooksLoaned"
@@ -278,7 +279,8 @@
                                     android:layout_height="wrap_content"
                                     android:text="Reservas activas"
                                     android:textColor="@color/colorPrimary"
-                                    android:textSize="12sp" />
+                                    android:textSize="12sp"
+                                    android:minLines="2" />
 
                                 <TextView
                                     android:id="@+id/tvActiveReserves"

@@ -20,6 +20,7 @@ import com.fcc.biblioteca.SmsHelper
 import com.fcc.biblioteca.databinding.FragmentProfileBinding
 import com.fcc.biblioteca.db.MyDBHandler
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.fcc.biblioteca.R
 
 class ProfileFragment : Fragment() {
 
@@ -106,7 +107,7 @@ class ProfileFragment : Fragment() {
                         layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                     }
 
-                    val btnSms = com.google.android.material.button.MaterialButton(requireContext(), null, com.google.android.material.R.attr.materialButtonStyle).apply {
+                    val btnSms = com.google.android.material.button.MaterialButton(requireContext()).apply {
                         text = ""
                         setIcon(ContextCompat.getDrawable(requireContext(), android.R.drawable.sym_action_email))
                         setIconSize((24 * resources.displayMetrics.density).toInt())

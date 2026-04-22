@@ -20,7 +20,9 @@ class MyLoansAdapter(
     inner class ViewHolder(val binding: ItemMyLoanBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(prestamo: Prestamo) {
             binding.tvBookTitle.text = prestamo.libro.titulo
-            binding.tvLoanDates.text = "Inicio: ${prestamo.fechaInicio}\nVencimiento: ${prestamo.fechaFin}"
+            binding.tvAuthor.text = prestamo.libro.autor
+            binding.tvCategory.text = prestamo.libro.categoria
+            binding.tvLoanDates.text = "Desde: ${prestamo.fechaInicio}  |  Hasta: ${prestamo.fechaFin}"
             
             val ctx = binding.root.context
             val resId = ctx.resources.getIdentifier(prestamo.libro.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
