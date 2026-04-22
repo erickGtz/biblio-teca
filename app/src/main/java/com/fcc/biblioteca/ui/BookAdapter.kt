@@ -23,11 +23,17 @@ class BookAdapter(
             binding.tvCategoryBadge.text = libro.categoria ?: "General"
             
             val ctx = binding.root.context
-            val resId = ctx.resources.getIdentifier(libro.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
-            if (resId != 0 && libro.imagen != null) {
-                binding.ivCover.setImageResource(resId)
+            val imgStr = libro.imagen ?: "bg_book_cover"
+            
+            if (imgStr.startsWith("content://") || imgStr.startsWith("file://")) {
+                binding.ivCover.setImageURI(android.net.Uri.parse(imgStr))
             } else {
-                binding.ivCover.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+                val resId = ctx.resources.getIdentifier(imgStr, "drawable", ctx.packageName)
+                if (resId != 0) {
+                    binding.ivCover.setImageResource(resId)
+                } else {
+                    binding.ivCover.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+                }
             }
             
             if (libro.stock > 0) {

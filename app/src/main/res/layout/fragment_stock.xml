@@ -195,13 +195,19 @@
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusTopStart="12dp"
                             app:hintTextColor="@color/colorPrimary">
-                            <AutoCompleteTextView
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/etCategory"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:minHeight="60dp"
+                                android:paddingTop="24dp"
+                                android:paddingBottom="16dp"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
                                 android:completionThreshold="1"
-                                android:background="@null"
-                                android:textColor="@color/textPrimary" />
+                                android:inputType="text"
+                                android:textColor="@color/textPrimary"
+                                android:background="@null" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout

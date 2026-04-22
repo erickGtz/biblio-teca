@@ -1,10 +1,13 @@
 package com.fcc.biblioteca.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fcc.biblioteca.databinding.FragmentStockBinding
@@ -19,6 +22,26 @@ class StockFragment : Fragment() {
     private lateinit var dbHandler: MyDBHandler
     private lateinit var adapter: StockAdapter
     private var editingLibroId: Int? = null
+    private var selectedImageName: String? = null
+
+    // Launcher para seleccionar imagen de la galería
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            // Tomamos permiso persistente para que la imagen se vea después de reiniciar la app
+            try {
+                val flag = android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                requireContext().contentResolver.takePersistableUriPermission(uri, flag)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            
+            selectedImageName = uri.toString()
+            binding.ivFormPreview.setImageURI(uri)
+            Toast.makeText(requireContext(), "Imagen seleccionada correctamente", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,11 +72,7 @@ class StockFragment : Fragment() {
         }
 
         binding.btnSelectImage.setOnClickListener {
-            // En una app real usaríamos ActivityResultLauncher para abrir la galería.
-            // Para este prototipo, simulamos la selección exitosa.
-            Toast.makeText(requireContext(), "Selector de galería abierto...", Toast.LENGTH_SHORT).show()
-            binding.ivFormPreview.setImageResource(android.R.drawable.ic_menu_gallery)
-            binding.ivFormPreview.tag = "new_image" // Marcador para saber que se cambió
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         
         binding.btnSaveBook.setOnClickListener {
@@ -77,19 +96,31 @@ class StockFragment : Fragment() {
         var esValido = true
         val title = binding.etTitle.text.toString().trim()
         val isbn = binding.etIsbn.text.toString().trim()
+        val author = binding.etAuthor.text.toString().trim()
+        val category = binding.etCategory.text.toString().trim()
         val stockStr = binding.etStock.text.toString().trim()
 
         // Limpiar errores previos
         binding.tilTitle.error = null
+        binding.tilAuthor.error = null
         binding.tilIsbn.error = null
+        binding.tilCategory.error = null
         binding.tilStock.error = null
 
         if (title.isEmpty()) {
             binding.tilTitle.error = "El título es obligatorio"
             esValido = false
         }
+        if (author.isEmpty()) {
+            binding.tilAuthor.error = "El autor es obligatorio"
+            esValido = false
+        }
         if (isbn.isEmpty() || (isbn.length != 10 && isbn.length != 13 && isbn.length != 3)) {
             binding.tilIsbn.error = "ISBN inválido (3, 10 o 13 dígitos)"
+            esValido = false
+        }
+        if (category.isEmpty()) {
+            binding.tilCategory.error = "La categoría es obligatoria"
             esValido = false
         }
         if (stockStr.isEmpty()) {
@@ -115,9 +146,9 @@ class StockFragment : Fragment() {
         val stock = binding.etStock.text.toString().toInt()
 
         val success = if (editingLibroId == null) {
-            dbHandler.addLibro(title, author, isbn, category, stock, sinopsis)
+            dbHandler.addLibro(title, author, isbn, category, stock, sinopsis, selectedImageName)
         } else {
-            dbHandler.updateLibro(editingLibroId!!, title, author, isbn, category, stock, sinopsis)
+            dbHandler.updateLibro(editingLibroId!!, title, author, isbn, category, stock, sinopsis, selectedImageName)
         }
 
         if (success) {
@@ -169,10 +200,17 @@ class StockFragment : Fragment() {
         binding.etTitle.requestFocus()
 
         // Cargar imagen actual
+        selectedImageName = libro.imagen
         val ctx = requireContext()
-        val resId = ctx.resources.getIdentifier(libro.imagen ?: "bg_book_cover", "drawable", ctx.packageName)
-        if (resId != 0) binding.ivFormPreview.setImageResource(resId)
-        else binding.ivFormPreview.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+        val imgStr = libro.imagen ?: "bg_book_cover"
+        
+        if (imgStr.startsWith("content://") || imgStr.startsWith("file://")) {
+            binding.ivFormPreview.setImageURI(Uri.parse(imgStr))
+        } else {
+            val resId = ctx.resources.getIdentifier(imgStr, "drawable", ctx.packageName)
+            if (resId != 0) binding.ivFormPreview.setImageResource(resId)
+            else binding.ivFormPreview.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
+        }
     }
 
     private fun resetForm() {
@@ -188,8 +226,11 @@ class StockFragment : Fragment() {
         binding.etStock.text?.clear()
         
         binding.tilTitle.error = null
+        binding.tilAuthor.error = null
         binding.tilIsbn.error = null
+        binding.tilCategory.error = null
         binding.tilStock.error = null
+        selectedImageName = null
         binding.ivFormPreview.setImageResource(com.fcc.biblioteca.R.drawable.bg_book_cover)
     }
 
