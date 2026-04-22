@@ -28,13 +28,46 @@ class RegisterActivity : AppCompatActivity() {
             val pass = binding.etPasswordRegister.text.toString()
             val confPass = binding.etConfirmPasswordRegister.text.toString()
             
-            if (nombre.isEmpty() || ap1.isEmpty() || phone.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(this, "Por favor llena todos los campos requeridos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+            // Limpiar errores previos
+            binding.tilName.error = null
+            binding.tilApellidoPaterno.error = null
+            binding.tilPhone.error = null
+            binding.tilEmail.error = null
+            binding.tilPassword.error = null
+            binding.tilConfirmPassword.error = null
+
+            var isValid = true
+
+            if (nombre.isEmpty()) {
+                binding.tilName.error = "Ingresa tu nombre"
+                isValid = false
             }
-            
+            if (ap1.isEmpty()) {
+                binding.tilApellidoPaterno.error = "Ingresa tu apellido"
+                isValid = false
+            }
+            if (phone.isEmpty() || phone.length < 10) {
+                binding.tilPhone.error = "Teléfono inválido (mín. 10 dígitos)"
+                isValid = false
+            }
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.tilEmail.error = "Correo electrónico inválido"
+                isValid = false
+            }
+            if (pass.isEmpty()) {
+                binding.tilPassword.error = "Ingresa una contraseña"
+                isValid = false
+            } else if (pass.length < 6) {
+                binding.tilPassword.error = "Mínimo 6 caracteres"
+                isValid = false
+            }
             if (pass != confPass) {
-                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                binding.tilConfirmPassword.error = "Las contraseñas no coinciden"
+                isValid = false
+            }
+
+            if (!isValid) {
+                Toast.makeText(this, "Corrige los errores marcados en rojo", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             

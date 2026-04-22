@@ -54,7 +54,7 @@ class MyDBHandler(
         const val COLUMN_CRED_TELEFONO = "telefono"
         const val COLUMN_CRED_CONTRASENA = "contrasena"
 
-        private val coverList = listOf("cover_cien_anos", "cover_quijote", "cover_principito", "cover_sapiens", "cover_davinci", "cover_1984")
+        private val coverList = listOf("cover_cien", "cover_1984", "cover_quijote", "cover_sapiens", "cover_codigo", "cover_principito")
         private var lastCoverIndex = -1
         
         fun getRandomCover(): String {
@@ -303,31 +303,31 @@ class MyDBHandler(
         if (count == 0) {
             val wdb = this.writableDatabase
             // Ficción (4 libros)
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12, 'La epopeya de la familia Buendía en el mítico pueblo de Macondo.', 'cover_cien_anos')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Cien años de soledad', 'Ficción', 'Gabriel García Márquez', '111', 'disponible', 12, 'La epopeya de la familia Buendía en el mítico pueblo de Macondo.', 'cover_cien')")
             wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('1984', 'Ficción', 'George Orwell', '666', 'disponible', 7, 'Una distopía sobre el control total del pensamiento.', 'cover_1984')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Rayuela', 'Ficción', 'Julio Cortázar', '667', 'disponible', 4, 'Una novela que se puede leer en varios órdenes.', 'cover_quijote')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Ensayo sobre la ceguera', 'Ficción', 'José Saramago', '668', 'disponible', 3, 'Una epidemia de ceguera blanca se extiende por una ciudad.', 'cover_cien_anos')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Rayuela', 'Ficción', 'Julio Cortázar', '667', 'disponible', 4, 'Una novela que se puede leer en varios órdenes.', 'cover_rayuela')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Ensayo sobre la ceguera', 'Ficción', 'José Saramago', '668', 'disponible', 3, 'Una epidemia de ceguera blanca se extiende por una ciudad.', 'cover_ensayo')")
 
             // Clásicos (4 libros)
             wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Don Quijote de la Mancha', 'Clásicos', 'Miguel de Cervantes', '222', 'disponible', 8, 'Las aventuras del ingenioso hidalgo.', 'cover_quijote')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('La Odisea', 'Clásicos', 'Homero', '223', 'disponible', 5, 'El viaje de regreso de Ulises a Ítaca.', 'cover_sapiens')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Hamlet', 'Clásicos', 'William Shakespeare', '224', 'disponible', 1, 'Tragedia sobre la duda y la venganza.', 'cover_davinci')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Orgullo y Prejuicio', 'Clásicos', 'Jane Austen', '225', 'disponible', 3, 'Relaciones personales en la Inglaterra rural.', 'cover_principito')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('La Odisea', 'Clásicos', 'Homero', '223', 'disponible', 5, 'El viaje de regreso de Ulises a Ítaca.', 'cover_odisea')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Hamlet', 'Clásicos', 'William Shakespeare', '224', 'disponible', 1, 'Tragedia sobre la duda y la venganza.', 'cover_hamlet')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Orgullo y Prejuicio', 'Clásicos', 'Jane Austen', '225', 'disponible', 3, 'Relaciones personales en la Inglaterra rural.', 'cover_orgullo')")
 
             // Infantil (3 libros)
             wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El principito', 'Infantil', 'Antoine de Saint-Exupéry', '333', 'disponible', 15, 'Un pequeño príncipe viaja por el universo.', 'cover_principito')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Peter Pan', 'Infantil', 'J.M. Barrie', '334', 'disponible', 4, 'El niño que no quería crecer.', 'cover_principito')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Alicia en el país de las maravillas', 'Infantil', 'Lewis Carroll', '335', 'disponible', 5, 'Un viaje a un mundo de fantasía absurda.', 'cover_principito')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Peter Pan', 'Infantil', 'J.M. Barrie', '334', 'disponible', 4, 'El niño que no quería crecer.', 'cover_peter')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Alicia en el país de las maravillas', 'Infantil', 'Lewis Carroll', '335', 'disponible', 5, 'Un viaje a un mundo de fantasía absurda.', 'cover_alicia')")
 
             // Historia (3 libros)
             wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Sapiens', 'Historia', 'Yuval Noah Harari', '444', 'disponible', 6, 'Una breve historia de la humanidad.', 'cover_sapiens')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El mundo de ayer', 'Historia', 'Stefan Zweig', '445', 'disponible', 4, 'Memorias de un europeo en tiempos de guerra.', 'cover_sapiens')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Guns, Germs, and Steel', 'Historia', 'Jared Diamond', '446', 'disponible', 3, 'Los destinos de las sociedades humanas.', 'cover_sapiens')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El mundo de ayer', 'Historia', 'Stefan Zweig', '445', 'disponible', 4, 'Memorias de un europeo en tiempos de guerra.', 'cover_ayer')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Guns, Germs, and Steel', 'Historia', 'Jared Diamond', '446', 'disponible', 3, 'Los destinos de las sociedades humanas.', 'cover_guns')")
 
             // Misterio / Ciencia (3 libros)
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10, 'Misterio histórico en el arte.', 'cover_davinci')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Cosmos', 'Ciencia', 'Carl Sagan', '777', 'disponible', 5, 'Exploración del universo y la ciencia.', 'cover_davinci')")
-            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Brief History of Time', 'Ciencia', 'Stephen Hawking', '778', 'disponible', 4, 'Desde el Big Bang hasta los agujeros negros.', 'cover_davinci')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('El código Da Vinci', 'Misterio', 'Dan Brown', '555', 'disponible', 10, 'Misterio histórico en el arte.', 'cover_codigo')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Cosmos', 'Ciencia', 'Carl Sagan', '777', 'disponible', 5, 'Exploración del universo y la ciencia.', 'cover_cosmos')")
+            wdb.execSQL("INSERT INTO $TABLE_LIBROS (titulo, categoria, autor, isbn, estado, stock, sinopsis, imagen) VALUES ('Brief History of Time', 'Ciencia', 'Stephen Hawking', '778', 'disponible', 4, 'Desde el Big Bang hasta los agujeros negros.', 'cover_brief')")
         }
     }
 
