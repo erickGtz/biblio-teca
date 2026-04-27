@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/bg_circle_icon"
+            android:background="@drawable/bg_category_rect"
             android:backgroundTint="@color/badgeBg"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"

@@ -163,7 +163,7 @@ class StockFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = StockAdapter(emptyList(), this::onUpdateStock, this::onDeleteBook, this::onEditBook)
+        adapter = StockAdapter(emptyList(), this::onDeleteBook, this::onEditBook)
         binding.recyclerStock.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerStock.adapter = adapter
         loadBooks()
@@ -172,11 +172,6 @@ class StockFragment : Fragment() {
     private fun loadBooks() {
         val list = dbHandler.getLibros()
         adapter.updateList(list)
-    }
-
-    private fun onUpdateStock(id: Int, change: Int) {
-        dbHandler.updateLibroStock(id, change)
-        loadBooks()
     }
 
     private fun onDeleteBook(id: Int) {
