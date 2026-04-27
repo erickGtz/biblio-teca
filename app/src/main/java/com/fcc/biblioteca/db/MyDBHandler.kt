@@ -256,7 +256,7 @@ class MyDBHandler(
         db.execSQL("UPDATE $TABLE_LIBROS SET $COLUMN_LIBRO_STOCK = MAX(0, $COLUMN_LIBRO_STOCK + ?) WHERE $COLUMN_LIBRO_ID = ?", arrayOf(change, id))
     }
     
-    fun addLibro(titulo: String, autor: String, isbn: String, categoria: String, stock: Int, sinopsis: String? = null): Boolean {
+    fun addLibro(titulo: String, autor: String, isbn: String, categoria: String, stock: Int, sinopsis: String? = null, imagen: String? = null): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_LIBRO_TITULO, titulo)
@@ -265,7 +265,7 @@ class MyDBHandler(
             put(COLUMN_LIBRO_CATEGORIA, categoria)
             put(COLUMN_LIBRO_STOCK, stock)
             put(COLUMN_LIBRO_SINOPSIS, sinopsis)
-            put(COLUMN_LIBRO_IMAGEN, getRandomCover())
+            put(COLUMN_LIBRO_IMAGEN, imagen ?: getRandomCover())
         }
         return try {
             val res = db.insert(TABLE_LIBROS, null, values)
@@ -275,7 +275,7 @@ class MyDBHandler(
         }
     }
 
-    fun updateLibro(id: Int, titulo: String, autor: String, isbn: String, categoria: String, stock: Int, sinopsis: String?): Boolean {
+    fun updateLibro(id: Int, titulo: String, autor: String, isbn: String, categoria: String, stock: Int, sinopsis: String?, imagen: String? = null): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_LIBRO_TITULO, titulo)
@@ -284,6 +284,9 @@ class MyDBHandler(
             put(COLUMN_LIBRO_CATEGORIA, categoria)
             put(COLUMN_LIBRO_STOCK, stock)
             put(COLUMN_LIBRO_SINOPSIS, sinopsis)
+            if (imagen != null) {
+                put(COLUMN_LIBRO_IMAGEN, imagen)
+            }
         }
         return try {
             val res = db.update(TABLE_LIBROS, values, "$COLUMN_LIBRO_ID=?", arrayOf(id.toString()))

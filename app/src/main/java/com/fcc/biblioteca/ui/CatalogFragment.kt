@@ -125,6 +125,14 @@ class CatalogFragment : Fragment() {
         adapter.updateList(filtered)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::dbHandler.isInitialized) {
+            allBooks = dbHandler.getLibros()
+            filterAndSortList()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
