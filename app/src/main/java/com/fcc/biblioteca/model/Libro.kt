@@ -13,3 +13,8 @@ data class Libro(
     var sinopsis: String? = null,
     var imagen: String? = null
 ) : Serializable
+
+data class LibroConPrestamos(
+    val libro: Libro,
+    val prestamosActivos: Int
+)

@@ -241,7 +241,10 @@
                                 android:background="@drawable/bg_rounded_rect"
                                 android:backgroundTint="@color/bgLightGray"
                                 android:orientation="vertical"
-                                android:padding="16dp">
+                                android:padding="16dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground">
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -272,7 +275,10 @@
                                 android:background="@drawable/bg_rounded_rect"
                                 android:backgroundTint="@color/bgLightGray"
                                 android:orientation="vertical"
-                                android:padding="16dp">
+                                android:padding="16dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground">
 
                                 <TextView
                                     android:layout_width="wrap_content"

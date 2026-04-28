@@ -23,6 +23,10 @@ class MainActivity : AppCompatActivity() {
         
         if (role != "admin") {
             binding.bottomNavigation.menu.removeItem(R.id.nav_stock)
+        } else {
+            binding.bottomNavigation.menu.removeItem(R.id.nav_catalog)
+            val loansItem = binding.bottomNavigation.menu.findItem(R.id.nav_loans)
+            loansItem?.title = "Préstamos"
         }
 
         val adapter = MainPagerAdapter(this, role == "admin")
@@ -56,5 +60,9 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
+    }
+
+    fun selectLoansTab() {
+        binding.bottomNavigation.selectedItemId = R.id.nav_loans
     }
 }
