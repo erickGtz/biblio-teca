@@ -584,4 +584,194 @@ class MyDBHandler(
         }
         cursor.close()
     }
+    
+    fun getAllPrestamosAdmin(): List<com.fcc.biblioteca.model.Prestamo> {
+        val list = mutableListOf<com.fcc.biblioteca.model.Prestamo>()
+        val db = this.readableDatabase
+        val query = """
+            SELECT p.$COLUMN_PRESTAMO_ID, p.$COLUMN_PRESTAMO_FECHA_INICIO, p.$COLUMN_PRESTAMO_FECHA_FIN, 
+                   l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_ISBN, l.$COLUMN_LIBRO_ESTADO, l.$COLUMN_LIBRO_STOCK, l.$COLUMN_LIBRO_SINOPSIS, l.$COLUMN_LIBRO_IMAGEN,
+                   u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, c.$COLUMN_CRED_CORREO
+            FROM $TABLE_PRESTAMOS p
+            INNER JOIN $TABLE_LIBROS l ON p.$COLUMN_PRESTAMO_ID_LIBRO = l.$COLUMN_LIBRO_ID
+            INNER JOIN $TABLE_USUARIOS u ON p.$COLUMN_PRESTAMO_ID_USUARIO = u.$COLUMN_USUARIO_ID
+            LEFT JOIN $TABLE_CREDENCIALES c ON u.$COLUMN_USUARIO_ID = c.$COLUMN_CRED_ID_USUARIO
+            ORDER BY p.$COLUMN_PRESTAMO_FECHA_FIN ASC
+        """
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val libro = com.fcc.biblioteca.model.Libro(
+                    id_libro = cursor.getInt(3),
+                    titulo = cursor.getString(4),
+                    categoria = cursor.getString(5),
+                    autor = cursor.getString(6),
+                    isbn = cursor.getString(7),
+                    estado = cursor.getString(8),
+                    stock = cursor.getInt(9),
+                    sinopsis = cursor.getString(10),
+                    imagen = cursor.getString(11)
+                )
+                
+                val nombre = cursor.getString(13)
+                val ap1 = cursor.getString(14)
+                val ap2 = cursor.getString(15) ?: ""
+                val nombreCompleto = "${nombre} ${ap1} ${ap2}".trim()
+                
+                list.add(
+                    com.fcc.biblioteca.model.Prestamo(
+                        id_prestamo = cursor.getInt(0),
+                        libro = libro,
+                        fechaInicio = cursor.getString(1),
+                        fechaFin = cursor.getString(2) ?: "",
+                        usuarioNombre = nombreCompleto,
+                        usuarioCorreo = cursor.getString(16),
+                        idUsuario = cursor.getInt(12)
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
+
+    fun extendPrestamo(idPrestamo: Int, days: Int): Boolean {
+        val db = this.writableDatabase
+        val query = "SELECT $COLUMN_PRESTAMO_FECHA_FIN FROM $TABLE_PRESTAMOS WHERE $COLUMN_PRESTAMO_ID = ?"
+        val cursor = db.rawQuery(query, arrayOf(idPrestamo.toString()))
+        
+        var success = false
+        if (cursor.moveToFirst()) {
+            val currentEndDateStr = cursor.getString(0)
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+            try {
+                val currentDate = sdf.parse(currentEndDateStr)
+                if (currentDate != null) {
+                    val cal = java.util.Calendar.getInstance()
+                    cal.time = currentDate
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, days)
+                    val newEndDateStr = sdf.format(cal.time)
+                    
+                    val values = ContentValues().apply {
+                        put(COLUMN_PRESTAMO_FECHA_FIN, newEndDateStr)
+                    }
+                    
+                    val res = db.update(TABLE_PRESTAMOS, values, "$COLUMN_PRESTAMO_ID = ?", arrayOf(idPrestamo.toString()))
+                    success = res > 0
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        cursor.close()
+        return success
+    }
+
+    fun getAllUsuarios(): List<com.fcc.biblioteca.model.Usuario> {
+        val list = mutableListOf<com.fcc.biblioteca.model.Usuario>()
+        val db = this.readableDatabase
+        val query = """
+            SELECT u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, u.$COLUMN_USUARIO_ROL, c.$COLUMN_CRED_CORREO, c.$COLUMN_CRED_TELEFONO
+            FROM $TABLE_USUARIOS u
+            LEFT JOIN $TABLE_CREDENCIALES c ON u.$COLUMN_USUARIO_ID = c.$COLUMN_CRED_ID_USUARIO
+            ORDER BY u.$COLUMN_USUARIO_NOMBRE ASC
+        """
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                list.add(
+                    com.fcc.biblioteca.model.Usuario(
+                        id_usuario = cursor.getInt(0),
+                        nombre = cursor.getString(1),
+                        apellido1 = cursor.getString(2),
+                        apellido2 = cursor.getString(3),
+                        rol = cursor.getString(4),
+                        correo = cursor.getString(5) ?: "",
+                        telefono = cursor.getString(6) ?: ""
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
+
+    fun getPrestamosPorLibro(idLibro: Int): List<com.fcc.biblioteca.model.Prestamo> {
+        val list = mutableListOf<com.fcc.biblioteca.model.Prestamo>()
+        val db = this.readableDatabase
+        val query = """
+            SELECT p.$COLUMN_PRESTAMO_ID, p.$COLUMN_PRESTAMO_FECHA_INICIO, p.$COLUMN_PRESTAMO_FECHA_FIN, 
+                   l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_ISBN, l.$COLUMN_LIBRO_ESTADO, l.$COLUMN_LIBRO_STOCK, l.$COLUMN_LIBRO_SINOPSIS, l.$COLUMN_LIBRO_IMAGEN,
+                   u.$COLUMN_USUARIO_ID, u.$COLUMN_USUARIO_NOMBRE, u.$COLUMN_USUARIO_APELLIDO1, u.$COLUMN_USUARIO_APELLIDO2, c.$COLUMN_CRED_CORREO
+            FROM $TABLE_PRESTAMOS p
+            INNER JOIN $TABLE_LIBROS l ON p.$COLUMN_PRESTAMO_ID_LIBRO = l.$COLUMN_LIBRO_ID
+            INNER JOIN $TABLE_USUARIOS u ON p.$COLUMN_PRESTAMO_ID_USUARIO = u.$COLUMN_USUARIO_ID
+            LEFT JOIN $TABLE_CREDENCIALES c ON u.$COLUMN_USUARIO_ID = c.$COLUMN_CRED_ID_USUARIO
+            WHERE p.$COLUMN_PRESTAMO_ID_LIBRO = ?
+            ORDER BY p.$COLUMN_PRESTAMO_FECHA_FIN ASC
+        """
+        val cursor = db.rawQuery(query, arrayOf(idLibro.toString()))
+        if (cursor.moveToFirst()) {
+            do {
+                val libro = com.fcc.biblioteca.model.Libro(
+                    id_libro = cursor.getInt(3),
+                    titulo = cursor.getString(4),
+                    categoria = cursor.getString(5),
+                    autor = cursor.getString(6),
+                    isbn = cursor.getString(7),
+                    estado = cursor.getString(8),
+                    stock = cursor.getInt(9),
+                    sinopsis = cursor.getString(10),
+                    imagen = cursor.getString(11)
+                )
+                
+                val nombreUsuario = "${cursor.getString(13)} ${cursor.getString(14)} ${cursor.getString(15) ?: ""}".trim()
+                val correoUsuario = cursor.getString(16) ?: "Sin correo"
+
+                val prestamo = com.fcc.biblioteca.model.Prestamo(
+                    id_prestamo = cursor.getInt(0),
+                    libro = libro,
+                    fechaInicio = cursor.getString(1),
+                    fechaFin = cursor.getString(2) ?: "",
+                    usuarioNombre = nombreUsuario,
+                    usuarioCorreo = correoUsuario,
+                    idUsuario = cursor.getInt(12)
+                )
+                list.add(prestamo)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
+
+    fun getLibrosWithPrestamosCount(): List<com.fcc.biblioteca.model.LibroConPrestamos> {
+        val list = mutableListOf<com.fcc.biblioteca.model.LibroConPrestamos>()
+        val db = this.readableDatabase
+        val query = """
+            SELECT l.$COLUMN_LIBRO_ID, l.$COLUMN_LIBRO_TITULO, l.$COLUMN_LIBRO_CATEGORIA, l.$COLUMN_LIBRO_AUTOR, l.$COLUMN_LIBRO_ISBN, l.$COLUMN_LIBRO_ESTADO, l.$COLUMN_LIBRO_STOCK, l.$COLUMN_LIBRO_SINOPSIS, l.$COLUMN_LIBRO_IMAGEN,
+                   (SELECT COUNT(*) FROM $TABLE_PRESTAMOS p WHERE p.$COLUMN_PRESTAMO_ID_LIBRO = l.$COLUMN_LIBRO_ID) as prestamosActivos
+            FROM $TABLE_LIBROS l
+            ORDER BY prestamosActivos DESC, l.$COLUMN_LIBRO_TITULO ASC
+        """
+        val cursor = db.rawQuery(query, null)
+        if (cursor.moveToFirst()) {
+            do {
+                val libro = com.fcc.biblioteca.model.Libro(
+                    id_libro = cursor.getInt(0),
+                    titulo = cursor.getString(1),
+                    categoria = cursor.getString(2),
+                    autor = cursor.getString(3),
+                    isbn = cursor.getString(4),
+                    estado = cursor.getString(5),
+                    stock = cursor.getInt(6),
+                    sinopsis = cursor.getString(7),
+                    imagen = cursor.getString(8)
+                )
+                val prestamosActivos = cursor.getInt(9)
+                list.add(com.fcc.biblioteca.model.LibroConPrestamos(libro, prestamosActivos))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return list
+    }
 }

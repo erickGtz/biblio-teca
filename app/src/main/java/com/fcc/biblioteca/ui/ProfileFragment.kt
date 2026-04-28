@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.fcc.biblioteca.LoginActivity
+import com.fcc.biblioteca.MainActivity
 import com.fcc.biblioteca.SmsHelper
 import com.fcc.biblioteca.databinding.FragmentProfileBinding
 import com.fcc.biblioteca.db.MyDBHandler
@@ -147,14 +148,25 @@ class ProfileFragment : Fragment() {
                 val parentStat1 = binding.containerBooksLoanedStat.getChildAt(0) as? TextView
                 parentStat1?.text = "Préstamos Totales"
 
+                binding.containerBooksLoanedStat.setOnClickListener {
+                    (requireActivity() as MainActivity).selectLoansTab()
+                }
+
                 // Maybe show total users in the Active Reserves card for admin?
                 // Let's customize the second stat for admin too.
                 val parentStat2 = binding.cardActiveReserves.getChildAt(0) as? TextView
                 parentStat2?.text = "Usuarios Totales"
                 binding.tvActiveReserves.text = totalUsers.toString()
+
+                binding.cardActiveReserves.setOnClickListener {
+                    val intent = Intent(requireContext(), AdminUsersActivity::class.java)
+                    startActivity(intent)
+                }
                 
             } else {
                 binding.containerBooksLoanedStat.visibility = View.GONE
+                binding.containerBooksLoanedStat.setOnClickListener(null)
+                binding.cardActiveReserves.setOnClickListener(null)
                 val parentStat2 = binding.cardActiveReserves.getChildAt(0) as? TextView
                 parentStat2?.text = "Reservas activas"
             }

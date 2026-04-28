@@ -51,6 +51,8 @@ class StockFragment : Fragment() {
         return binding.root
     }
 
+    private var allBooks: List<Libro> = emptyList()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
@@ -61,6 +63,14 @@ class StockFragment : Fragment() {
         val catAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
         binding.etCategory.setAdapter(catAdapter)
         
+        binding.etSearchStock.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterBooks(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
         binding.btnAddNew.setOnClickListener {
             resetForm()
             binding.containerAddForm.visibility = if (binding.containerAddForm.visibility == View.VISIBLE) View.GONE else View.VISIBLE
@@ -89,6 +99,20 @@ class StockFragment : Fragment() {
                     ejecutarGuardado()
                 }
             }
+        }
+    }
+
+    private fun filterBooks(query: String) {
+        if (query.isEmpty()) {
+            adapter.updateList(allBooks)
+        } else {
+            val q = query.lowercase()
+            val filtered = allBooks.filter {
+                it.titulo.lowercase().contains(q) || 
+                it.autor?.lowercase()?.contains(q) == true || 
+                it.isbn?.lowercase()?.contains(q) == true
+            }
+            adapter.updateList(filtered)
         }
     }
 
@@ -157,6 +181,7 @@ class StockFragment : Fragment() {
             val msg = if (editingLibroId == null) "¡Libro guardado exitosamente!" else "Información actualizada correctamente"
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
             loadBooks()
+            binding.etSearchStock.text?.clear()
         } else {
             binding.tilIsbn.error = "Este ISBN ya existe en el sistema"
         }
@@ -170,8 +195,8 @@ class StockFragment : Fragment() {
     }
 
     private fun loadBooks() {
-        val list = dbHandler.getLibros()
-        adapter.updateList(list)
+        allBooks = dbHandler.getLibros()
+        filterBooks(binding.etSearchStock.text.toString())
     }
 
     private fun onDeleteBook(id: Int) {

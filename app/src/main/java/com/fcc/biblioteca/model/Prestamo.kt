@@ -6,5 +6,8 @@ data class Prestamo(
     var id_prestamo: Int = 0,
     var libro: Libro,
     var fechaInicio: String,
-    var fechaFin: String
+    var fechaFin: String,
+    var usuarioNombre: String? = null,
+    var usuarioCorreo: String? = null,
+    var idUsuario: Int? = null
 ) : Serializable
